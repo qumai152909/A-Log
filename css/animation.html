@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>animation</title>
+  <style>
+    @keyframes loader {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(200px);
+        background: #4daa12;
+      }
+    }
+    .bouncing-loader {
+      display: flex;
+      justify-content: center;
+    }
+    .bouncing-loader > div {
+      width: 3rem;
+      height: 3rem;
+      margin: 3rem 0.2rem;
+      background: #5f5aaa;
+      border-radius: 50%;
+      animation: loader 3s 2s 4 linear both;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bouncing-loader">
+  <div></div>
+</div>
+
+</body>
+</html>
