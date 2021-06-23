@@ -1,3 +1,5 @@
+# 参考链接
+
 https://zhuanlan.zhihu.com/p/34943332
 
 https://mp.weixin.qq.com/s/XoqGvYBabW8YBl9xEeNYZw
@@ -32,7 +34,9 @@ https://my.oschina.net/u/4093217/blog/3123257 rewrite
 
 # 概念
 
-“Nginx 是一款轻量级的 HTTP 服务器，采用事件驱动的、异步、非阻塞处理方式框架，这让其具有极好的 IO 性能，时常用于服务端的**反向代理**和**负载均衡**。”
+“Nginx 是一款轻量级的 HTTP 服务器，采用事件驱动的、异步、非阻塞处理方式框架，这让其具有极好的 IO 性能，
+
+时常用于服务端的**反向代理**和**负载均衡**。”
 
 Nginx 是一款 http 服务器 （或叫web服务器）；
 
@@ -117,8 +121,6 @@ xhr.withCredentials = true;
 
 同时，Cookie依然遵循同源政策，只有用服务器域名设置的Cookie才会上传，其他域名的Cookie并不会上传，且（跨源）原网页代码中的`document.cookie`也无法读取服务器域名下的Cookie。
 
-
-
 # Master-Worker模式
 
 启动Nginx后，其实就是在80端口启动了Socket服务进行监听，如图所示，Nginx涉及Master进程和Worker进程。
@@ -131,8 +133,6 @@ xhr.withCredentials = true;
 2. `/usr/local/var/www` （nginx服务器默认的根目录）
 3. `/usr/local/Cellar/nginx/1.17.9` （nginx的安装路径）
 4. `/usr/local/var/log/nginx/error.log` (nginx默认的日志路径)
-
-
 
 # j-dos 的配置
 

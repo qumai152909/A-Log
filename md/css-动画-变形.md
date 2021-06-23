@@ -1,4 +1,4 @@
-# transition 、 animation ：动画
+# 1. transition 、animation ：动画
 
 都属于css3的动画；
 
@@ -33,17 +33,20 @@ transition: property duration timing-function delay
 
 1，**属性名：property**：应用过渡效果的css属性名称。当这个属性发生改变时，会触发过渡效果，过渡动画开始执行，使元素从旧的属性值过渡到新的属性值。 若=all，则表示设置所有的css属性。
 
+
 # animation
 
 通过定义动画中的关键帧，来实现复杂的动画效果。
 
+语法： animation: 关键帧名称 持续时间 时间函数 延迟时间 动画运行次数 运行方向
+
 *属性*
 
- [`animation-name`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-name): @keyframes定义的名称（关键帧集合名词）
+ [`animation-name`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-name): @keyframes定义的名称（关键帧集合名称）
 
 [`animation-duration`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-duration)： 3s
 
- [`animation-timing-function`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-timing-function)： ease，linear;  cubic-bezier(0.1, 0.7, 1.0, 0.1); 
+ [`animation-timing-function`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-timing-function)： ease，linear;  cubic-bezier(0.1, 0.7, 1.0, 0.1);
 
 [`animation-delay`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-delay)： 3s
 
@@ -57,9 +60,9 @@ transition: property duration timing-function delay
 
 *属性解释：*
 
-+ `animation-iteration-count` ：  定义动画运行的次数 ，可以是1次、无限循环
++ `animation-iteration-count` ： 定义动画运行的次数 ，可以是1次、无限循环
 
-+ `animation-direction` CSS 属性指示动画是否反向播放
++ `animation-direction` CSS 属性指示动画播放方向
 
   >1， normal:
   >每个动画结束，动画重置到起点，重新开始   (默认)
@@ -72,7 +75,7 @@ transition: property duration timing-function delay
   >
   >同时，带时间功能的函数也反向，比如，ease-in 在反向时成为ease-out
   >
-  >3， reverse: 
+  >3， reverse:
   >
   >反向运行动画，和normal完全相反；每次都是反向执行
   >
@@ -159,7 +162,7 @@ http://caibaojian.com/30-seconds-of-css/
 
 
 
-# transform: 变形
+# 2. transform: 变形
 
 **总结：**
 
@@ -172,14 +175,14 @@ transform字面上就是变形，改变，转换的意思。
 语法：
 
 ~~~
-   transform: rotate | scale | skew | translate |matrix;
+   transform: rotate | scale | skew | translate | matrix;
 ~~~
 
 [css3](http://caibaojian.com/t/css3) [transform](http://caibaojian.com/t/transform)里面有一个属性**transform-origin**(http://caibaojian.com/t/transform)，该属性可以改变元素的原点位置，
 
 默认，*变形的原点在元素的中心点*。
 
-###translate:
+### translate:
 
 translate: 移动，他的作用很简单，就是平移，参考自己的位置来平移。
 
@@ -196,13 +199,21 @@ translate: 移动，他的作用很简单，就是平移，参考自己的位置
 - 一个参数时：表示水平方向的移动距离；
 - 两个参数时：第一个参数表示**水平方向**的移动距离，第二个参数表示**垂直方向**的移动距离。
 - translateX[水平移动体验 ](http://www.w3school.com.cn/tiy/c.asp?f=css_transform_translatex)  translateY[竖直移动体验](http://www.w3school.com.cn/tiy/c.asp?f=css_transform_translatey)  ， translateZ()， translate3d()
-- 其基点默认为*元素中心点*，
+- 其基点默认为*元素中心点*
+
+***
 
 >注意：为什么有时候⼈们⽤translate来改变位置⽽不是定位？
 >
->translate()是transform的⼀个值。改变transform或opacity不会触发浏览器重新布局（reflow）或重绘（repaint），只会触发复合（compositions）。
+>​		translate()是transform的⼀个值。
 >
->⽽改变绝对定位会触发重新布局，进⽽触发重绘和复合。
+>1， 改变transform或opacity不会触发浏览器计算、重新布局（reflow），只会触发复合（compositions）。
+>
+>⽽改变绝对定位会触发重新布局，进⽽触发重绘和复合（reflow/relayout）。
+>
+>【所谓重排，即指对这些节点，以及受影响的其它节点，进行CSS计算->布局->重绘过程，这个过程的前2步是消耗大量资源的】
+>
+>
 >
 >transform使浏览器为元素创建⼀个 GPU 图层，但改变绝对定位会使⽤到 CPU。 因此translate()更⾼效，可以缩短平滑动画的绘制时间。
 >
@@ -210,7 +221,7 @@ translate: 移动，他的作用很简单，就是平移，参考自己的位置
 
 ***
 
-###旋转 -- rotate:
+### 旋转 -- rotate:
 
 通过指定的角度参数对元素进行顺时针或逆时针的旋转。（2D 旋转）。
 
@@ -222,7 +233,7 @@ transform: rotate(45deg);
 
 *rotate()默认旋转中心为图片的中点*（旋转的基点）
 
-###缩放 scale
+### 缩放 scale
 
 定义元素的缩放转换；将元素按照指定的比例进行放大和缩小。
 
