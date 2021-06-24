@@ -1,0 +1,42 @@
+{
+  "_from": "fsk-async",
+  "_id": "fsk-async@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha1-F5Dw908HzjSrIiLbb000zZbOaNc=",
+  "_location": "/fsk-async",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "fsk-async",
+    "name": "fsk-async",
+    "escapedName": "fsk-async",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.nlark.com/fsk-async/download/fsk-async-1.0.0.tgz",
+  "_shasum": "1790f0f74f07ce34ab2222db6f4d34cd96ce68d7",
+  "_spec": "fsk-async",
+  "_where": "/Users/yaogang/MyStudy/code/example/studys",
+  "author": {
+    "name": "xubo"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "",
+  "keywords": [
+    "async"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "fsk-async",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}
