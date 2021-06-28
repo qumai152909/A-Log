@@ -1,10 +1,12 @@
-bin 和 package.json
+https://juejin.cn/post/6844903603950338062#heading-5
+
+# bin 和 package.json
 
 https://docs.npmjs.com/cli/v7/configuring-npm/package-json
 
 如果你发布的包中含有可执行文件，需要导入到路径PATH中，需要此命令。
 
-bin项用来指定各个内部命令对应的可执行文件的位置。
+*bin项用来指定各个内部命令对应的可执行文件的位置。*
 
 ## bin是一个对象
 
@@ -104,7 +106,44 @@ if (help) {
 
 
 
-## 命令行参数
+## 命令行参数: process.argv
+
+http://nodejs.cn/api/process/process_argv.html
+
+`process.argv` 属性返回数组：
+
+​		数组中第一个元素是 [`process.execPath`](http://nodejs.cn/api/process.html#process_process_execpath)；(解释器的绝对路径名)
+
+​		 第二个元素将是正在执行的 JavaScript 文件的路径；
+
+​		**其余元素将是任何其他命令行参数。**
+
+例如，假设 `process-args.js` 有以下脚本：
+
+```js
+// 打印 process.argv
+process.argv.forEach((val, index) => {
+  console.log(`${index}: ${val}`);
+});
+```
+
+以如下方式启动 Node.js 进程：
+
+```bash
+$ node process-args.js one two=three four
+```
+
+将生成输出：
+
+```text
+0: /usr/local/bin/node
+1: /Users/mjr/work/node/process-args.js
+2: one
+3: two=three
+4: four
+```
+
+
 
 
 
@@ -128,7 +167,7 @@ console.log('hello world');
 
 此时，在终端直接执行命令`./hello`， 不能显示结果，报错如下：
 
-<img src="../imgs/no-quanxian.png" alt="'" style="zoom:100%;" />
+<img src="../imgs/no-quanxian.png" alt="'" style="zoom:80%;" />
 
 原因：权限问题。脚本需要有执行权限，可以使用下面的命令，赋予脚本执行权限。
 
@@ -148,9 +187,32 @@ $ chmod 700 hello
 
 修改权限后，可以正确执行：
 
-<img src="../imgs/has-quanxian.png" alt="'" style="zoom:80%;" />
+<img src="../imgs/has-quanxian.png" alt="'" style="zoom: 80%;" />
 
+### npm link
 
+如果想把 hello 前面的路径去除，可以将 hello 的路径加入环境变量 PATH。
+
+但是，另一种更好的做法，是在当前目录下新建 package.json (touch package.json) ，写入下面的内容。
+
+~~~json
+{
+  "name": "hello",
+  "bin": {
+    "hello": "./hello"
+  }
+}
+~~~
+
+然后执行 npm link 命令
+
+~~~bash
+$ npm link
+~~~
+
+### 命令行参数
+
+<img src="../imgs/process.argv.png" alt="process.argv" style="zoom:50%;" />
 
 
 
