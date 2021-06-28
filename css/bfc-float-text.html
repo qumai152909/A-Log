@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    p {
+      margin: 0;
+    }
+    .container {
+      color: #fff;
+      width: 500px;
+      background: #abbccc;
+      outline: 4px #84ff57 solid;
+      overflow: auto;
+    }
+    #A {
+      float: left;
+      width: 200px;
+      height: 200px;
+      margin-right: 20px;
+      background: #C00;
+    }
+
+    #B {
+      /*overflow: hidden;*/
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="A">A float</div>
+  <div id="B">
+    B，元素B的背景和元素A的背景重合了一部分。
+    这就是用来解释为什么说浮动元素脱离了正常的文档流但是还会影响布局的原因。
+    之所以说元素A脱离了文档流，是因为元素B确实占据了元素A之前的位置，好像元素A已经不存在了似的。
+    只所以说会影响布局，是因为元素B里的文字并没有随之占据元素A的位置，而是环绕在浮动之后的元素A旁边。
+    这是为了避免元素A将元素B里的文字覆盖了，这恰好就是浮动的目的！
+  </div>
+</div>
+
+<!--
+第一个子元素A左浮动后，脱离了文档流，由第二个子元素B撑起父元素的高度，造成了父元素高度塌陷，且第二个子元素容器里面的文字内容不是从容器最左侧显示，而是紧挨着第一个浮动元素来显示，所以产生了文字环绕效果。
+如何解决高度塌陷 ？为父元素设置overflow: auto;
+-->
+
+<!--
+为B设置overflow: hidden后，文字就不会围绕A了。
+原因： B在设置了overflow:hidden后，会建立一个BFC，而BFC的区域不会与浮动容器发生重叠；
+-->
+</body>
+</html>

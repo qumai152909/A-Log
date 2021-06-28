@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>圣杯布局</title>
+  
+  <style>
+  
+    .wrap {
+      max-width: 1200px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      outline: 1px #cfc8f8 solid;
+    }
+    header, footer {
+      height: 10vh;
+      background-color: #abbccc;
+    }
+    main {
+      flex: 1;
+      display: flex;
+    }
+    article {
+      flex: 1;
+    }
+    /* 给 nav 和 aside 以固定的宽度 */
+    nav, aside {
+      width: 10vw;
+      background-color: #3f4642;
+    }
+  </style>
+  
+</head>
+
+<body>
+
+<div class="wrap">
+  <header>Header</header>
+  <main>
+    <nav>Nav</nav>
+    <article>Article</article>
+    <aside>Aside</aside>
+  </main>
+  <footer>Footer</footer>
+</div>
+
+
+</body>
+</html>

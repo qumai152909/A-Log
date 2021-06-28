@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>float: 两列布局</title>
+  <style>
+    .wrap {
+      width: 90%;
+      /*max-width: 900px;*/
+      margin: 0 auto;
+      overflow: auto;
+      background-color: #faeaec;
+    }
+    .left {
+      width: 200px;
+      float: left;
+      color: #4daa12;
+      background: yellowgreen;
+    }
+   
+    /*
+    main块实现了宽度自适应
+    */
+    .main {
+      overflow: auto;
+      color: #7753aa;
+      background-color: #cc92b2;
+    }
+
+    footer {
+      clear: both;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>2 column layout example</h1>
+  
+  <div class="left">
+    <h2>First column</h2>
+    <p>
+      Lorem ipsum dolor sit ametIn vitae ctpat. Suspendisse ac imperdiet turpis. Aenean finibus sollicitudin eros pharetra
+    </p>
+  </div>
+  
+  <div class="main">
+    <h2>main column</h2>
+    <p>Nam vulputate diam nec tempor bibendum. Donec luctus augue eget malesuada ultricesDonec luctus augue eget malesuada ultricesDonec luctus augue eget malesuada ultricesDonec luctus augue eget malesuada ultrices. Phasellus turpis est, posuere sit amet dapibus ut, facilisis sed est. Nam id risus quis ante semper consectetur eget aliquam lorem. Vivamus tristique elit dolor, sed pretium metus suscipit vel. Mauris ultricies lectus sed lobortis finibus. Vivamus eu urna eget velit cursus viverra quis vestibulum sem. Aliquam tincidunt eget purus in interdum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+  </div>
+  
+  <footer>
+    <p>&copy;2016 your imagination. This isn't really copyright, this is a mockery of the very concept. Use as you wish.</p>
+  </footer>
+</div>
+
+<!--
+BFC的区域不会与浮动容器发生重叠：
+
+如果main在正常情况下，左侧元素.left浮动时，会与右侧元素.main发生重叠，不能实现自适应两栏效果。
+原因：
+左侧元素浮动，脱离文档流。
+
+
+解决方法：给右侧元素.main添加声明overflow: hidden;，左右侧元素重叠消失，实现自适应两栏效果。
+原因：
+给右侧元素.main添加声明overflow: hidden;
+使得右侧元素触发了BFC（见BFC触发条件3），
+而BFC特性规定“BFC的区域不会与浮动容器发生重叠”，从而解决了重叠问题，实现自适应两栏效果。
+
+
+-->
+
+</body>
+</html>

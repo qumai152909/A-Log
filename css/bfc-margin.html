@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .show-body {
+      border: 1px solid black;
+      border-radius: 5px;
+      background: pink;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+<div class="show-body">
+  <div style="background-color: rgba(0,255,0,0.5);width: 260px;height:50px;margin-bottom:10px;">块级盒子一的下外边距为10px</div>
+  
+  <!-- 给其中一个div外面包一个div，然后通过触发外面这个div的BFC，就可以阻止这两个div的margin重叠 -->
+  <div style="overflow: scroll;">
+    <div style="background-color: rgba(255,0,0,0.5);width: 260px;height:50px;margin-top:10px;">块级盒子二的上外边距为10px</div>
+  </div>
+</div>
+</body>
+</html>
