@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+
+
+console.log('ssss test bin');
+
+const args = process.argv.slice(2);
+
+
+if (args[0] === 'user') {
+  require('./lib/user')
+}
+
+if (args[0] === 'demo1') {
+  require('./lib/demo1')()
+}
+
+if (args[0] === 'demo2') {
+  require('./lib/demo2')()
+}
+
+if (args[0] === 'txt') {
+  require('./lib/txt')
+}
