@@ -1,13 +1,13 @@
+const fs = require('fs');
+const resolvePath = require('path').resolve;
+
 const inputPromise = require('../utils/inputPromise.js');
 
 function demo2() {
-  const jackon = {
-  
-  };
+  const jackon = {};
   
   inputPromise('请输入姓名：')
     .then(name => {
-      //console.log(str);
       if (name) {
         jackon.name = name;
       }
@@ -19,8 +19,18 @@ function demo2() {
       }
     })
     .then(() => {
-      porcess.stdin.pause();
-    });
+      process.stdin.pause();
+  
+  
+      const fpath = resolvePath(__dirname, '../data/demo2.json');
+  
+      fs.writeFile(fpath, JSON.stringify(jackon), 'utf8', err => {
+        if (err) {
+          throw err;
+        }
+      });
+    })
+    .catch(err => console.log(err.message));
 }
 
 module.exports = demo2;

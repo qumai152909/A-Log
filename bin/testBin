@@ -23,3 +23,11 @@ if (args[0] === 'demo2') {
 if (args[0] === 'txt') {
   require('./lib/txt')
 }
+
+if (args[0] === 'prams') {
+  require('./lib/showPrams')
+}
+
+if (args[0] === 'upfile') {
+  require('./lib/upfile')
+}

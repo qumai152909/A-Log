@@ -8,7 +8,7 @@ function inputPromise(msg) {
       const getDataCb = (chunk) => {
         if (chunk) {
           process.stdin.removeListener('data', getDataCb);
-          resolve(chunk);
+          resolve(chunk.trim());
         }
       };
   
