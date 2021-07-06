@@ -1,3 +1,23 @@
+https://juejin.cn/post/6844904077537574919 要就来45道Promise面试题一次爽到底(1.1w字用心整理)
+
+https://zhuanlan.zhihu.com/p/99201300 [面试题]实现Promise.all
+
+https://segmentfault.com/a/1190000039775255  [记得有一次面试被虐的题，Promise 完整指南](https://segmentfault.com/a/1190000039775255)
+
+
+
+https://segmentfault.com/a/1190000022277560  [挑战大厂第2篇-手动实现promise.all](https://segmentfault.com/a/1190000022277560)
+
+
+
+https://github.com/yygmind/blog/issues/43  前端 100 问：能搞懂80%的请把简历给我
+
+ **[ Daily-Interview-Question](https://github.com/Advanced-Frontend/Daily-Interview-Question)**
+
+https://segmentfault.com/t/javascript/questions 技术问答
+
+https://ac.nowcoder.com/discuss/292850 leetcode 高频算法题目
+
 
 
 # Catch 的后续链式
@@ -9,7 +29,6 @@
 ```js
 new Promise((resolve, reject) => {
     console.log('初始化');
-
     resolve();
 })
 .then(() => {

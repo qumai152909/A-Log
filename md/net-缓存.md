@@ -1,3 +1,5 @@
+https://zhuanlan.zhihu.com/p/44789005
+
 # 缓存机制
 
 浏览器的缓存机制也就是我们说的HTTP缓存机制；
