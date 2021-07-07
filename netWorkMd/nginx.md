@@ -1053,7 +1053,7 @@ https://stackoverflow.com/questions/20713363/nginx-rewrite-with-try-files-403
 
 # try_files root alias rewrite实践
 
-访问地址：http:120.27.215.50
+访问地址：http://120.27.215.50
 
 服务器ip地址：120.27.215.50
 
