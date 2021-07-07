@@ -44,19 +44,13 @@ https://segmentfault.com/a/1190000040041002?utm_source=sf-similar-article 常见
 
 时常用于服务端的**反向代理**和**负载均衡**。”
 
-Nginx 是一款 http 服务器 （或叫web服务器）；
-
-（nginx是一个高性能的反向代理服务器；）
+Nginx 是一款 http 服务器 （或叫web服务器）；（nginx是一个高性能的反向代理服务器；）
 
 >web服务器：负责处理和响应用户请求，一般也称为http服务器，如 Apache、IIS、Nginx
 >
 >应用服务器：存放和运行系统程序的服务器，负责处理程序中的业务逻辑，如 Tomcat、Weblogic、Jboss（现在大多数应用服务器也包含了web服务器的功能）.
 
-
-
 启动Nginx后，其实就是在80端口启动了Socket服务进行监听http request；
-
-
 
 # 代理
 
@@ -121,8 +115,6 @@ server {
 + 其中主要依赖proxy_pass，实现将a.test.com下的/api/x接口转发到了b.test.com下面
 + **其实这是把Nginx作为web server来处理静态资源**
 
-
-
 # 配置文件: nginx.conf
 
 我们的主战场：nginx.conf
@@ -165,8 +157,6 @@ location /api {
 
 针对这种情况，如果后端接口统一有了规定前缀，比如**/api**，那你这里就不要配置斜杠了。另一种情况，后端接口shit一样，没有统一前缀，这边又要区分，那就在前端所有接口都加一个统一前缀，比如**/api**，然后通过加**斜杠**来替换掉好了～
 
-
-
 **3，nginx配置文件中的127.0.0.1**
 
 ~~~nginx
@@ -178,8 +168,6 @@ location /api {
 
 
 ~~~
-
-
 
 # 跨域🌟
 
@@ -283,13 +271,11 @@ https://zhuanlan.zhihu.com/p/34943332
 3. `/usr/local/Cellar/nginx/1.17.9` （nginx的安装路径）
 4. `/usr/local/var/log/nginx/error.log` (nginx默认的日志路径)
 
-
-
-
-
 # 内置变量
 
-内置变量，nginx 各个模块都**将请求的一些参数进行变量化**，通过 `$ + 变量名` 即可使用。每个模块或多或少都有自己的变量。着重介绍下核心模块的 [内置变量](http://nginx.org/en/docs/http/ngx_http_core_module.html#variables)：
+内置变量，nginx 各个模块都**将请求的一些参数进行变量化**，通过 `$ + 变量名` 即可使用。
+
+每个模块或多或少都有自己的变量。着重介绍下核心模块的 [内置变量](http://nginx.org/en/docs/http/ngx_http_core_module.html#variables)：
 
 ```nginx
 # 通过arg_<name>的方式可取出相关参数，若请求 /foo?name=Tony&age=2，则 arg_name=tony arg_age=2
@@ -364,18 +350,7 @@ http {
 
 }
 # 或者上面三句话用一句话代替： include extra/*.conf; 或 include extra/*;
-
 ~~~
-
-
-
-# server_name
-
-server_name指令主要用于配置基于域名的虚拟主机；
-
-
-
-
 
 # location
 
@@ -493,8 +468,6 @@ location ~* /js/.*/\.js {
     最长匹配到C，往下正则顺序匹配到CC，不会往下到E
 
 ~~~
-
-
 
 # React-Router and Nginx
 
@@ -630,7 +603,7 @@ location / {
 
 # rewrite
 
-在`location`里一旦返回`break`则直接生效并停止后续的匹配`location`
+在`location`里，一旦返回`break`则直接生效并停止后续的匹配`location`
 
 ```nginx
 server {
@@ -658,7 +631,6 @@ https://blog.csdn.net/weixin_44580977/article/details/99655747
 
 ```
 格式：rewrite xxxxx  break;
-
 ```
 
 当配置文件中有location时，它还会去执行location{}段的配置（请求要匹配该location）。
@@ -710,7 +682,7 @@ server{
 
 当请求/1.html，最终会访问/2.html。 如果没有break，当请求/1.html，最终会访问/b.html。
 
-在location{}内部，遇到break，本location{}内以及后面的所有location{}内的所有指令都不再执行。
+*在location{}内部，遇到break，本location{}内，以及后面的所有location{}内的所有指令都不再执行。*
 
 ****
 
@@ -753,34 +725,23 @@ server{
 
 
 
-# Alias、 rewrite
+## 其他：$1参数
 
-~~~
-1，
-location /abc/ {
-	alias /home/html/abc/;
-}
-在这段配置下，http://test/abc/a.html 就指定的是 http://test/home/html/abc/a.html, 等价于：
+The `$1` is basically the captured contents of everything from the start and the end of the string. In other words, `$1 = (.*)`.
 
-2，
-location /abc/ {
-	root /home/html/; 		# nginx就会去找/home/html/目录下的abc目录了
-}
+In your rewrite, the `^` signifies the start of the string（起始位置）
 
-3，
-location /abc/ {
-	alias /home/html/def/;
-}
-# 那么nginx将会从/home/html/def/取数据，
-~~~
+the `(.*)` says to match anything,
+
+```perl
+RewriteRule ^(.*)$ /index.php/$1 [L]
+```
+
+So if I type in `www.example.com/tacos-are-good`, then `$1 = "tacos-are-good"`. So your end rewrite will actually be `www.example.com/index.php/tacos-are-good`.
 
 
 
-
-
-# 配置参数
-
-## server_name
+# server_name
 
 [server_name](http://nginx.org/en/docs/http/ngx_http_core_module.html#server_name)，设置虚拟主机的名称。
 
@@ -789,7 +750,6 @@ location /abc/ {
 ```
 默认值 server_name "";
 server_name name1 name2 ...; # name1: primary server name
-
 ```
 
 例1，穷举域名
@@ -798,7 +758,6 @@ server_name name1 name2 ...; # name1: primary server name
 server {
     server_name example.com www.example.com;
 }
-
 ```
 
 例2，通配符写法
@@ -807,7 +766,6 @@ server {
 server {
     server_name example.com *.example.com www.example.*;
 }
-
 ```
 
 Server names can include an asterisk (“`*`”) replacing the first or last part of a name:
@@ -822,68 +780,53 @@ Server names can include an asterisk (“`*`”) replacing the first or last par
 
 ~~~nginx
         server_name  www.zipeiyi.com zipeiyi.com;
-
 ~~~
 
 *所谓虚拟主机别名就是为 虚拟主机设置除了主域名以外的一个或者多个域名*
 
-
-
-
-
-
-
-## expires缓存
+# expires缓存
 
 对于网站的图片,尤其是新闻站, 图片一旦发布, 改动的可能是非常小的.我们希望 能否在用户访问一次后, 图片缓存在用户的浏览器端,且时间比较长的缓存。可以, 用到 nginx的expires设置 。nginx中设置过期时间,非常简单。在location或if段里,来写。
 
 设置格式
 
+```nginx
+expires 30s;  #30秒
+expires 30m;  #30分钟
+expires 2h;   #2个小时
+expires 30d;  #30天
 ```
-expires 30s;#30秒
-expires 30m;#30分钟
-expires 2h;#2个小时
-expires 30d;#30天
 
-```
-
-
-
-
-
-## Log、log_format 日志格式
+# Log、log_format 日志格式
 
 1、log_format 语法：
-log_format name（格式名字） 格式样式（即想要得到什么样的日志内容）
+				log_format name（格式名字） 格式样式（即想要得到什么样的日志内容）
 
-示例： 默认格式
+​				示例： 默认格式
 
 ```nginx
 log_format   main   
 '$remote_addr - $remote_user [$time_local] "$request" '
 '$status $body_bytes_s ent "$http_referer" '
 '"$http_user_agent" "$http_x_forwarded_for"'
-
 ```
 
 2, access_log
 
-用了log_format 指令设置了日志格式之后，需要用access_log指令指定日志文件的存放路径；
+​	用了log_format 指令设置了日志格式之后，需要用access_log指令指定日志文件的存放路径；
 
-语法：
-access_log path(存放路径) format (自定义日志名称)
+​	语法： access_log path(存放路径) format (自定义日志名称)
 
-示例:
+​	示例:
 
 > access_log logs/access.log main;
 
 3,  error_log：
-配置错误日志，例如上例。
+		配置错误日志，例如上例。
 
 ~~~nginx
 # 错误日志保存路径和级别
 error_log  /var/log/nginx/error.log warn;
-
 ~~~
 
 
@@ -968,17 +911,41 @@ server {
 
 ~~~
 
-## alias vs root
+
+
+# alias、 rewrite
+
+~~~nginx
+# 1，
+location /abc/ {
+	alias /home/html/abc/;
+}
+# 在这段配置下，http://test/abc/a.html 就指定的是 http://test/home/html/abc/a.html, 
+# 等价于2：
+
+# 2，
+location /abc/ {
+	root /home/html/; 		# nginx就会去找/home/html/目录下的abc目录了
+}
+
+
+# 3，
+location /abc/ {
+	alias /home/html/def/;
+}
+# 那么nginx将会从/home/html/def/取数据，
+# 在这段配置下，http://test/abc/a.html 就指定的是 http://test/home/html/def/a.html
+~~~
+
+# alias、root
 
  [Nginx虚拟目录alias和root目录](https://www.cnblogs.com/kevingrace/p/6187482.html)
 
 ***
 
-最终指向的文件路径区别
-root指向的文件实际路径：pathname =>	root+pathname
+最终指向的文件路径区别：
+root指向的文件实际路径： pathname =>	root+pathname
 alias指向的文件实际路径：pathname =>	alias
-
-
 
 ***
 
@@ -986,9 +953,9 @@ nginx是通过alias设置虚拟目录，在nginx的配置中，alias目录和roo
 
 1）alias指定的目录是准确的，即location匹配访问的path目录下的文件直接是在alias目录下查找的；
 
-2）root指定的目录是location匹配访问的path目录的上一级目录,这个path目录一定要是真实存在root指定目录下的；
+2）root指定的目录是location匹配访问的path目录的上一级目录, 这个path目录一定要是真实存在root指定目录下的；
 
-3）使用alias标签的目录块中不能使用rewrite的break（具体原因不明）；**另外，alias后面指定的目录后面必须要加上"/"符号！！**
+3）*使用alias标签的目录块中不能使用rewrite的break（具体原因不明*）；**另外，alias后面指定的目录后面必须要加上"/"符号！**
 
 4）alias配置中，location匹配的path目录如果后面不带"/"，那么访问的url地址中这个path目录后面加不加"/"不影响访问，访问时它会自动加上"/"；
   但是如果location匹配的path目录后面加上"/"，那么访问的url地址中这个path目录必须要加上"/"，访问时它不会自动加上"/"。如果不加上"/"，访问就会失败！
@@ -1009,10 +976,9 @@ location /i/ {
 # 最终pathname为： /data/w3/
 ### 最后返回的结果为  www.wangshibo.com/data/w3/test.png
 ### alias配置最后的/一定是要的，否则返回结果会变成  /data/w3test.png  而返回的404
-
 ~~~
 
-注意：alias指定的目录后面必须要加上"/"，即/data/w3/不能改成/data/w3。
+​			注意：alias指定的目录后面必须要加上"/"，即/data/w3/不能改成/data/w3。
 
 示例二
 
@@ -1021,13 +987,14 @@ location /i/ {
     root /data/w3/;
 }
 # 最终pathname为： /data/w3/i/
-### 如果访问 www.wangshibo.com/i/test.png 最后返回的结果为 www.wangshibo.com/data/w3/i/test.png, root配置最后的/要不要都行
+### 如果访问 www.wangshibo.com/i/test.png 最后返回的结果为 www.wangshibo.com/data/w3/i/test.png, 
 
+# root配置最后的/要不要都行
 ~~~
 
 https://www.cnblogs.com/kevingrace/p/6187482.html
 
-## server root
+# server root
 
  server root , location root 区别: https://www.shuzhiduo.com/A/q4zV4r8G5K/
 
@@ -1039,13 +1006,7 @@ root 指的是请求的根目录，引用nginx官网的解释：
 
  总结：location里面的root优先级高于server root
 
-```
-
-```
-
-
-
-## try_files
+# try_files
 
 Nginx的配置语法灵活，可控制度非常高。
 
@@ -1058,32 +1019,146 @@ try_files指令
 语法：try_files file ... uri 或 try_files file ... = code
 默认值：无
 作用域：server location
-
 ```
 
-查找路径是按照给定的root或alias为根路径来查找的;
+**查找路径是按照给定的root或alias为根路径来查找的;**
 
-其作用是按顺序检查文件是否存在，返回第一个找到的文件或文件夹(结尾加斜线表示为文件夹)，如果所有的文件或文件夹都找不到，会进行一个内部重定向到最后一个参数。
+其作用是按顺序，检查文件是否存在，返回第一个找到的文件或文件夹(结尾加斜线表示为文件夹)，如果所有的文件或文件夹都找不到，会进行一个内部重定向到最后一个参数。
 
 ***
 
-需要注意的是，只有最后一个参数可以引起一个内部重定向，之前的参数只设置内部URI的指向。最后一个参数是回退URI且必须存在，否则会出现内部500错误。命名的location也可以使用在最后一个参数中。与rewrite指令不同，如果回退URI不是命名的location那么$args不会自动保留，如果你想保留$args，则必须明确声明。
+需要注意的是，只有最后一个参数可以引起一个内部重定向，之前的参数只设置内部URI的指向。最后一个参数是回退URI且必须存在，否则会出现内部500错误。
+
+命名的location也可以使用在最后一个参数中。与rewrite指令不同，如果回退URI不是命名的location那么$args不会自动保留，如果你想保留$args，则必须明确声明。
 
 ```nginx
 try_files $uri $uri/ /index.php?q=$uri&$args;
-
 ```
 
-当用户请求 http://localhost/example 时，这里的 $uri 就是 /example。
+例如：当用户请求 http://localhost/example 时，这里的 $uri 就是 /example， $root 是项目代码安装目录
 
-try_files 会到硬盘里尝试找这个文件。如果存在名为 /$root/example（其中 $root 是项目代码安装目录）的文件，就直接把这个文件的内容发送给用户。
++ 首先：try_files 会到硬盘里尝试找 $uri 这个文件，如果存在名为 /$root/example的文件，就直接把这个文件的内容发送给用户。查找停止。
++ 显然，目录中没有叫 example 的文件。然后就查找目录： $uri/，也就是看有没有名为 /$root/example/ 的目录。
+  + 如果存在这个/example/目录，则查找停止，看这个目录下有没有index字段指定的索引文件（一般是index.html 、index.htm），如果有，则直接返回/$root/example/index.html文件。如果没有，报错，**403 Forbidden**
+  + 如果不存在这个目录，继续向下查找；
++ 继续查找，就会 fall back 到 try_files 的最后一个选项 /index.php，发起一个内部 “子请求”，也就是相当于 nginx 发起一个 HTTP 请求到 http://localhost/index.php。
 
-显然，目录中没有叫 example 的文件。然后就看 $uri/，增加了一个 /，也就是看有没有名为 /$root/example/ 的目录。
-又找不到，就会 fall back 到 try_files 的最后一个选项 /index.php，发起一个内部 “子请求”，也就是相当于 nginx 发起一个 HTTP 请求到 http://localhost/index.php。
+## 403 Forbidden🍓
+
+https://stackoverflow.com/questions/20713363/nginx-rewrite-with-try-files-403
+
+> `$uri/` will always return 403 if it doesn't contain the index file specified in `index` because by default it forbids folder listing, you should either put the index file if that's what you intend to do, or just remove the whole `$uri/` from the `try_files` so that it would return `404` instead of `403`
+
+`try_files $uri $uri/` means, from the root directory, try the file pointed by the `uri`, if that does not exists, try a directory instead (hence the `/`). When nginx access a directory, it tries to index it and return the list of files inside it to the browser/client, however by default directory indexing is disabled, and so it returns the error "Nginx 403 error: directory index of [folder] is forbidden".
+
+# try_files root alias rewrite实践
+
+访问地址：http:120.27.215.50
+
+服务器ip地址：120.27.215.50
+
+服务器上前端静态资料存放root： /webApp/
+
+## demo1
+
+~~~
+/webApp/
+		/js
+			  a.html
+    /css
+    		b.html
+    index.html		
+~~~
+
+nginx部分配置如下：
+
+~~~nginx
+server {
+    listen       80 default_server;
+    server_name  _;
+    root         /webApp;
+
+    location / {
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html
+    }
+}
+~~~
+
+### 访问：http://120.27.215.50/js
+
+控制台出现：
+
+<img src="../imgs/nginx-301.png" alt="301" style="zoom:40%;" />
+
+
+
+过程：url中js是一个目录，但是没有以/结尾，回被强制重定向到http://120.27.215.50/js/，重定向地址末尾加上了/；
+
+而访问http://120.27.215.50/js/，出现403 Forbidden。
+
+### 访问：http:120.27.215.50/bom
+
+结果：不会被强制重定向，但出现404； (访问http:120.27.215.50/bom/ 也出现404)
+
+try_files没起作用？正常情况下，try_files $uri $uri/ /index.html 访问规则是：
+
+		>/webApp/bom
+		>
+		>/webApp/bom/index.html  & index.htm
+		>
+		>http:120.27.215.50/index.html (注意：此处是重新发起请求，不是在服务器上查找文件/webApp/index.html 或 /webApp/bom/index.html)
+
+### 解决办法？
+
+将nginx的默认配置文件/etc/nginx/nginx.conf，中的server清空；
+
+放开/etc/nginx/nginx.conf文件中的include字段：include /etc/nginx/conf.d/extra.conf
+
+添加并修改/etc/nginx/conf.d/extra.conf为以下内容：
+
+~~~nginx
+    server {
+        listen       80 default_server;
+        server_name  _;
+        root         /webApp;
+
+        access_log               /webApp/access.log main;
+        error_log                /webApp/error.log warn;
+
+
+        location / {
+            index index.html index.htm;
+            try_files $uri $uri/ /index.html?$query_string;;
+        }
+
+        #error_page 404 /404.html;
+    }
+~~~
+
+此时，访问：http://120.27.215.50/bom/ 正常，重定向到是http://120.27.215.50/index.html
+
+但是访问http://120.27.215.50/css/ 仍然是403 Forbidden;
+
+### 原因：
+
+http://120.27.215.50/bom/访问时：
+
+查找1：/webApp/bom/  找不到/bom/ 文件，顺着try_files继续查找;
+
+查找2：/webApp/bom/目录， 找不到对应目录，顺着try_files继续查找;
+
+查找3: 查找到try_files最后一个值，发生内部重定向，定向到的http 地址为：http://120.27.215.50/index.html
 
 ***
 
-## docker 和 nginx
+http://120.27.215.50/css/访问时：
+
+查找1：/webApp/css/  找不到/css/ 文件，顺着try_files继续查找;
+
+查找2：/webApp/css/ 目录存在，查找结束，返回这个目录下的索引文件（index.html index.htm），但是索引文件不存在，返回403 Forbidden;
+
+# docker 和 nginx
 
 首先你需要安装 Docker，不同的操作系统有不同的 [安装](https://docs.docker.com/install/) 方式。
 
@@ -1153,9 +1228,7 @@ http {
 
 https://juejin.cn/post/6844904003793321998
 
-
-
-## 其他配置
+# 其他配置
 
 ~~~nginx
 ----------------------------------------
@@ -1184,11 +1257,7 @@ http {
 
 
 
-
-
-
-
-## 反向代理 - proxy_pass
+# 反向代理 - proxy_pass
 
 所谓反向代理，很简单，其实就是在location这一段配置中的root替换成**proxy_pass**即可。
 
@@ -1199,8 +1268,6 @@ http {
 反向代理，上面已经说了，过程是透明的，比如说request -> Nginx -> Tomcat，那么对于Tomcat而言，请求的IP地址就是Nginx的地址，而非真实的request地址，这一点需要注意。
 
 不过好在Nginx不仅仅可以反向代理请求，还可以由用户**自定义设置HTTP HEADER**。
-
-
 
 # proxy_pass
 
@@ -1416,7 +1483,20 @@ nginx -V
 
 
 
+# nginx 403 forbidden
 
+引起nginx 403 forbidden通常是三种情况：一是缺少索引文件，二是权限问题，三是SELinux状态。
+
+一、缺少index.html或者index.php文件，就是配置文件中index index.html index.htm这行中的指定的文件。
+
+二、权限问题，如果nginx没有web目录的操作权限，也会出现403错误。
+
+​	解决办法：修改web目录的读写权限，或者是把nginx的启动用户改成目录的所属用户，重启Nginx即可解决
+
+```
+1.    chmod -R 777 /data
+2.    chmod -R 777 /data/www/
+```
 
 # j-dos 的配置
 
