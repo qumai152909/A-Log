@@ -166,7 +166,6 @@ location /api {
 			# 反代 IP 127.0.0.1 是 nginx 所在的主机,也就是容器内的本地IP，就是 nginx 所在容器内环境
   }
 
-
 ~~~
 
 # 跨域🌟
@@ -181,7 +180,7 @@ Nginx作为反向代理服务器，就是把接口请求转发到另一个或者
 
 对于浏览器来说，访问的就是同源服务器上的一个url。而Nginx通过检测url前缀，把http请求转发到后面真实的物理服务器。并通过rewrite命令把前缀再去掉。这样真实的服务器就可以正确处理请求，并且浏览器并不知道这个请求是来自代理服务器的。
 
-~~~http
+~~~nginx
 server { 
         location / { 
             root   html; 
@@ -426,7 +425,6 @@ location ~* /js/.*/\.js {
   # 不区分大小写匹配
   [ configuration I ]
 }
-
 ~~~
 
 
@@ -1136,7 +1134,7 @@ try_files没起作用？正常情况下，try_files $uri $uri/ /index.html 访�
     }
 ~~~
 
-此时，访问：http://120.27.215.50/bom/ 正常，重定向到是http://120.27.215.50/index.html
+此时，访问：http://120.27.215.50/bom/ 正常，try_files重定向到是http://120.27.215.50/index.html
 
 但是访问http://120.27.215.50/css/ 仍然是403 Forbidden;
 
@@ -1157,6 +1155,8 @@ http://120.27.215.50/css/访问时：
 查找1：/webApp/css/  找不到/css/ 文件，顺着try_files继续查找;
 
 查找2：/webApp/css/ 目录存在，查找结束，返回这个目录下的索引文件（index.html index.htm），但是索引文件不存在，返回403 Forbidden;
+
+**其他更多实践，参考文件‘前段部署-阿里云.md’**
 
 # docker 和 nginx
 
@@ -1285,27 +1285,23 @@ proxy_set_header 就是可设置请求头-并将头信息传递到代理服务�
 
 ~~~nginx
     location /pfApi/ {
-        proxy_set_header 		Host $host; # proxy_set_header重新定义或添加字段，传递给代理服务器的请求头
+        proxy_set_header 		Host $host;    # proxy_set_header重新定义或添加字段，传递给代理服务器的请求头
         proxy_set_header 		X-Real-Ip $remote_addr; # $remote_addr=客户端IP地址
         proxy_set_header		X-Forwarded-For $remote_addr;
         proxy_pass				  http://tomcat_okr-ui.com/;      # 最终URL=http://tomcat_okr-ui.com/getName
   			proxy_pass				  http://tomcat_okr-ui.com;       # 最终URL=http://tomcat_okr-ui.com/pfApi/getName
  			  proxy_pass				  http://tomcat_okr-ui.com/add/;  # 最终URL=http://tomcat_okr-ui.com/add/getName
    			proxy_pass				  http://tomcat_okr-ui.com/add;  # 最终URL=http://tomcat_okr-ui.com/add/pfApi/getName
-  
     }
-
 ~~~
 
 >⚠️：
 >
->在nginx中配置proxy_pass代理转发时，如果在proxy_pass后面的url加/，表示绝对根路径；
+>在nginx中配置proxy_pass代理转发时，如果在proxy_pass后面的url加/，表示绝对根路径，替换操作；
 >
->如果没有/，表示相对路径，把匹配的路径部分也给代理走。
+>如果没有/，表示相对路径，把匹配的路径部分也给代理走， 添加操作。
 >
->
-
-
+>http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass
 
 
 
