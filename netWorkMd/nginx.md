@@ -603,12 +603,20 @@ location / {
 
 # rewrite
 
+## flag: last vs break:
+
+**last和break用来实现URL重写，浏览器地址栏的URL地址不变**，但在服务器访问的程序及路径发生了变化。
+
+redirect和permanent用来实现URL跳转，浏览器地址会显示跳转后的URL地址。
+
+last和break标记的实现功能类似，但二者之间有细微的差别，使用alias指令时必须用last标记，使用proxy_pass指令时要使用break标记。
+
 在`location`里，一旦返回`break`则直接生效并停止后续的匹配`location`
 
 ```nginx
 server {
     location / {
-        rewrite /last/ /q.html last;
+        rewrite /last/  /q.html last;
         rewrite /break/ /q.html break;
     }
     location = /q.html {
@@ -1271,9 +1279,122 @@ http {
 
 # proxy_pass
 
-https://www.cnblogs.com/kevingrace/p/8269955.html
+语法： **proxy_pass** `URL`;
 
-https://www.jianshu.com/p/b010c9302cd0
+其中，URL中含不含uri，表现很不同：
+
+Nginx的[官网](http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass)将proxy_pass分为两种类型：
+
+一种是只包含IP和端口号的（连端口之后的`/`也没有，这里要特别注意），比如`proxy_pass http://localhost:8080`，这种方式称为不带URI方式；
+
+另一种是在端口号之后有其他路径的，包含了只有单个`/`的如`proxy_pass http://localhost:8080/`，以及其他路径，比如`proxy_pass http://localhost:8080/abc`。
+
+也即：`proxy_pass http://localhost:8080`和`proxy_pass http://localhost:8080/`(多了末尾的`/`)是不同的的处理方式，而`proxy_pass http://localhost:8080/`和`proxy_pass http://localhost:8080/abc`是相同的处理方式。
+
+***
+
+### 例如1： 
+
+~~~nginx
+# 访问  http://aaa-bbb.com/pfApi/getName
+
+location /pfApi/ {
+        proxy_set_header 		Host $host; # proxy_set_header重新定义或添加字段，传递给代理服务器的请求头
+        proxy_set_header 		X-Real-Ip $remote_addr; # $remo te_addr=客户端IP地址
+        proxy_set_header		X-Forwarded-For $remote_addr;
+  
+        proxy_pass	  http://tomcat_okr-ui.com/;  # 最终URL= http://tomcat_okr-ui.com/getName
+  			proxy_pass		http://tomcat_okr-ui.com;   # 最终URL=http://tomcat_okr-ui.com/pfApi/getName
+ 			  proxy_pass		http://tomcat_okr-ui.com/add/;  # 最终URL=http://tomcat_okr-ui.com/add/getName
+   			proxy_pass	  http://tomcat_okr-ui.com/add;  # 最终URL=http://tomcat_okr-ui.com/addgetName
+ }
+~~~
+
+>⚠️：
+>
+>在nginx中配置proxy_pass代理转发时，如果proxy_pass后面的url中含有uri，（替换操作）；
+>
+>如果没有uri，（追加）。
+>
+>简单的说，不带URI的方式只替换主机名，带URI的方式替换整个URL。
+
+### 其他实例2：
+
+~~~nginx
+# 访问  http://127.0.0.1:80/proxy/api/test
+
+（1）
+location /proxy/ {
+    proxy_pass http://127.0.0.1:8080;
+}
+# 实际地址：http://127.0.0.1:8080/proxy/api/test
+
+（2）
+location /proxy {
+    proxy_pass http://127.0.0.1:8080;
+}
+# 实际地址：http://127.0.0.1:8080/proxy/api/test
+
+(3)
+location /proxy/ {
+    proxy_pass http://127.0.0.1:8080/;
+}
+# 实际地址：http://127.0.0.1:8080/api/test
+
+(4)配置
+location /proxy {
+    proxy_pass http://127.0.0.1:8080/;
+}
+# 实际地址：http://127.0.0.1:8080//api/test # 请注意这里的双斜线，好好分析一下。
+
+(5)
+location /proxy/ {
+    proxy_pass http://127.0.0.1:8080/test/;
+}
+# 实际地址：http://127.0.0.1:8080/test/api/test
+
+(6)
+location /proxy {
+    proxy_pass http://127.0.0.1:8080/test/;
+}
+# 实际地址：http://127.0.0.1:8080/test//api/test
+
+(7)
+location /proxy/ {
+    proxy_pass http://127.0.0.1:8080/test;
+}
+# 实际地址：http://127.0.0.1:8080/testapi/test
+
+(8)
+location /proxy {
+    proxy_pass http://127.0.0.1:8080/test;
+}
+# 实际地址：http://127.0.0.1:8080/test/api/test
+~~~
+
+**由以上规则可以看出，当 `proxy_pass url` 中包含路径时，结尾的 `/` 最好同 `location` 匹配规则一致。**
+
+### 同时存在rewrite 和 proxy_pass
+
+如果在location中使用了“rewrite”指令（break）对请求的uri进行了修改，那么proxy_pass指令中的uri将会被忽略，被rewrite之后的全量uri将会传递给proxy server (the full changed request URI is passed to the proxy server.)。
+
+~~~nginx
+location /name {  
+    rewrite   /name/([^/]+)   /users?name=$1    break;  
+  
+    proxy_pass http://127.0.0.1/useless;   # /useless将会被忽略
+}  
+~~~
+
+http://exmaple.org/name/zhangsan，
+
+首先，被rewrite到   http://exmaple.org/user?name=zhangsan
+
+然后，将会转发到    http://127.0.0.1/users?name=zhangsan 
+
+
+
+### proxy_set_header
 
 Nginx proxy_set_header：**即允许重新定义或添加字段传递给代理服务器的请求头。该值可以包含文本、变量和它们的组合。**
 
@@ -1281,35 +1402,15 @@ Nginx proxy_set_header：**即允许重新定义或添加字段传递给代理�
 
 proxy_set_header 就是可设置请求头-并将头信息传递到代理服务器端，不属于请求头的参数中也需要传递时，重定义下即可！
 
-例如： 访问http://aaa-bbb.com/pfApi/getName
-
-~~~nginx
-    location /pfApi/ {
-        proxy_set_header 		Host $host; # proxy_set_header重新定义或添加字段，传递给代理服务器的请求头
-        proxy_set_header 		X-Real-Ip $remote_addr; # $remote_addr=客户端IP地址
-        proxy_set_header		X-Forwarded-For $remote_addr;
-        proxy_pass				  http://tomcat_okr-ui.com/;      # 最终URL=http://tomcat_okr-ui.com/getName
-  			proxy_pass				  http://tomcat_okr-ui.com;       # 最终URL=http://tomcat_okr-ui.com/pfApi/getName
- 			  proxy_pass				  http://tomcat_okr-ui.com/add/;  # 最终URL=http://tomcat_okr-ui.com/add/getName
-   			proxy_pass				  http://tomcat_okr-ui.com/add;  # 最终URL=http://tomcat_okr-ui.com/add/pfApi/getName
-  
-    }
-
-~~~
-
->⚠️：
->
->在nginx中配置proxy_pass代理转发时，如果在proxy_pass后面的url加/，表示绝对根路径；
->
->如果没有/，表示相对路径，把匹配的路径部分也给代理走。
->
->
 
 
+### 参考
 
+https://www.cnblogs.com/kevingrace/p/8269955.html
 
+https://www.jianshu.com/p/b010c9302cd0
 
-
+http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass
 
 # 负载均衡【upstream】
 
