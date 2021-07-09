@@ -51,6 +51,10 @@ function readdirFilesSync(root) {
     // 得出fd的完整路径: '/Users/sunyingying23/Github/A-Log/bin/asset-dev/main.html'
     const fdPath = pathstart && pathstart.index === 0 ? pathjion(root, fd) : pathjion(cwd, root, fd);
     
+    // 如果fdPath是一个文件
+    if(isFile(fdPath)) {
+    
+    }
   });
 }
 
