@@ -16,15 +16,13 @@ http://www.srcmini.com/61074.html
  npm install ssh2
 ```
 
-
+https://www.npmjs.com/package/ssh2
 
 # ssh2 Api
 
  `require('ssh2').Client`  : returns a **_Client_** constructor. (客户端构造函数)
 
  `require('ssh2').Server` returns a **_Server_** constructor. （服务器端构造函数）
-
-
 
 # ssh2 Client： 客户端
 
@@ -43,9 +41,13 @@ var conn = new Client(); // 创建一个客户端实例对象
 
 ## client methods(方法)
 
+### connect()  sftp()
+
 * **connect**(< _object_ >config) - _(void)_ - 使用参数 `config` 中给出的信息尝试连接到服务器
 
-* **sftp**(< _function_ >callback) - _boolean_ - 启动 SFTP 会话. `callback有2个参数`: < _Error_ >err, < _SFTPStream_ >sftp. For methods available on `sftp`, see the [`SFTPStream` client documentation](https://github.com/mscdex/ssh2-streams/blob/master/SFTPStream.md) (except `read()` and `write()` are used instead of `readData()` and `writeData()` respectively, for convenience). Returns `false` if you should wait for the `continue` event before sending any more traffic.
+* **sftp**(< _function_ >callback) - _boolean_ - 启动 SFTP 会话. `callback有2个参数`: < _Error_ >err, < _SFTPStream_ >sftp. For methods available on `sftp`, see thesee the [`SFTP` client documentation](https://github.com/mscdex/ssh2/blob/master/SFTP.md).
+
+  (except `read()` and `write()` are used instead of `readData()` and `writeData()` respectively, for convenience). Returns `false` if you should wait for the `continue` event before sending any more traffic.
 
 打开sftp连接：
 
@@ -68,6 +70,14 @@ conn.on('ready', function() {
 }).connect(connSettings);
 ~~~
 
+### client.exec()
+
+**exec**(< *string* >command[, < *object* >options], < *function* >callback) - *(void)* - Executes `command` on the server. `callback` has 2 parameters: < *Error* >err, < *Channel* >stream. Valid `options` properties are:
+
+### client.end()
+
+- **end**() - *(void)* - Disconnects the socket.
+
 
 
 # ftp (文件传输协议)
@@ -89,9 +99,11 @@ FTP是TCP/IP协议组中的协议之一，TP协议由两个部分组成：
 
 ## vs sftp
 
-SFTP是SSH File Transfer Protocol的缩写，安全文件传送协议。
+SFTP = SSH File Transfer Protocol，安全文件传送协议。
 
-SFTP与FTP有着几乎一样的语法和功能。SFTP为SSH的其中一部分，是一种传输档案至 Blogger 伺服器的安全方式。
+SFTP与FTP有着几乎一样的语法和功能。
+
+SFTP为SSH的其中一部分，是一种传输档案至 Blogger 服务器的安全方式。
 
 其实在SSH软件包中，已经包含了一个叫作SFTP的安全文件信息传输子系统，SFTP本身没有单独的守护进程，它必须使用sshd守护进程(**端口号默认是22**)来完成相应的连接和答复操作，所以从某种意义上来说，SFTP并不像一个服务器程序，而更像是一个客户端程序。
 
@@ -109,7 +121,9 @@ SFTP是SSH File Transfer Protocol的缩写，安全文件传送协议。
 
 SFTPStream: 是一个双向的流；
 
+C = Client
 
+https://github.com/mscdex/ssh2/blob/master/SFTP.md
 
 ## C: sftp.fastGet() 下载文件
 
@@ -120,6 +134,7 @@ fastGet(< *string* >remotePath, < *string* >localPath[, < *object* >options], < 
 ~~~js
 var conn = new Client();
 conn.on('ready', function() {
+  
     conn.sftp(function(err, sftp) {
         if (err) throw err;
         
@@ -159,11 +174,13 @@ sftp.createReadStream('sample.txt', {encoding: 'utf8'});
 
 
 
-## C：sftp.readdir()
+## C: sftp.readdir()
 
 语法：
 
 ​	 readdir(< *mixed* >location, < *function* >callback) - *boolean*
+
+作用： Retrieves a directory listing = 检索目录中的所有内容
 
 要列出目录, 请使用readdir方法:
 
@@ -178,6 +195,7 @@ conn.on('ready', function() {
     conn.sftp(function(err, sftp) {
          if (err) throw err;
          
+      // list是一个数组[{ filename: 'foo', longname: '....', attrs: {...} }]
          sftp.readdir(remotePathToList, function(err, list) {
                 if (err) throw err;
                 // List the directory in the console
@@ -199,9 +217,77 @@ list参数是一个包含对象的数组, 每个对象都包含有关远程路�
     ...
   }
 ]
+例如：2代表文件夹，1代表文件， 属性：attrs: Stats
+[
+  {
+    filename: 'index.html',
+    longname: '-rw-r--r--    1 root     root          576 Jul  7 00:16 index.html',
+    attrs: Stats {
+      mode: 33188,
+      permissions: 33188,
+      uid: 0,
+      gid: 0,
+      size: 576,
+      atime: 1625768480,
+      mtime: 1625588171
+    }
+  },
+  {
+    filename: 'css',
+    longname: 'drwxr-xr-x    2 root     root           35 Jul  7 18:34 css',
+    attrs: Stats {
+      mode: 16877,
+      permissions: 16877,
+      uid: 0,
+      gid: 0,
+      size: 35,
+      atime: 1625795531,
+      mtime: 1625654082
+    }
+  },
+  {
+    filename: 'access.log',
+    longname: '-rw-r--r--    1 nginx    root      1976513 Jul  9 13:22 access.log',
+    attrs: Stats {
+      mode: 33188,
+      permissions: 33188,
+      uid: 990,
+      gid: 0,
+      size: 1976513,
+      atime: 1625808187,
+      mtime: 1625808170
+    }
+  },
+  {
+    filename: 'redirect.html',
+    longname: '-rw-r--r--    1 root     root          597 Jul  7 18:15 redirect.html',
+    attrs: Stats {
+      mode: 33188,
+      permissions: 33188,
+      uid: 0,
+      gid: 0,
+      size: 597,
+      atime: 1625740108, // 资源访问时间的 UNIX 时间戳。
+      mtime: 1625652940 //  UNIX timestamp of the modified time of the resource
+    }
+  }
+]    
 ~~~
 
 
+
+## C: sftp.stat()
+
+- **stat**(< *string* >path, < *function* >callback) - *(void)* - 
+
+  列出目标的属性（如上面的attrs: Stats） = Retrieves attributes for `path`.
+
+   `callback` has 2 parameter: < *Error* >err, < *Stats* >stats.
+
+  参数stats还有其他方法：
+
+  - `stats.isDirectory()` ： 是否是一个目录
+  - `stats.isFile()`
 
 ## C: sftp.unlink(): 删除远程文件
 
@@ -227,10 +313,6 @@ conn.on('ready', function() {
     });
 }).connect(connSettings);
 ~~~
-
-
-
-
 
 
 

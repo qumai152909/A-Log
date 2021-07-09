@@ -46,6 +46,17 @@ console.log('成功删除了 /tmp/shiyanlou');
 
 而异步方法采用回调函数接收返回结果，可以立即执行后续代码。
 
+# fs.readdirSync()
+
+`fs.readdirSync(path[, options])` ： 同步方法，读取目录里的所有内容；
+
+参数：
+
+	path： 类型：string | URL | Buffer； 文件名或文件描述符；
+	option： 类型：string | object；encoding默认为‘utf8’
+
+返回值是一个数组；
+
 # fs.readFile(): 读取文件
 
 语法：
@@ -56,9 +67,9 @@ fs.readFile(filepath,[option],callback)
 
 参数：
 
-	+ filepath： 类型：string | URL | Buffer； 文件名或文件描述符；
-	+ option： 类型：string | object；可以设置编码格式（encoding），默认值是null；...
-	+ Callback:  (err, data) => null;   data是从文件读取数据；data的默认类型是Buffer；如果想data的类型是字符串，需要在option中设置encoding为‘utf8’ 或者 data.toString();
+	filepath： 类型：string | URL | Buffer； 文件名或文件描述符；
+	option： 类型：string | object；可以设置编码格式（encoding），默认值是null；...
+	Callback:  (err, data) => null;   data是从文件读取数据；data的默认类型是Buffer；如果想data的类型是字符串，需要在option中设置encoding为‘utf8’ 或者 data.toString();
 
 **demo: 异步读取文件内容：**
 
@@ -88,9 +99,11 @@ fs.readFile('./test.txt', function(err, data) {
 // fs.readFile('./test.txt', 'utf8', callback);
 ```
 
-readFile同步的写法就是没有回调函数：fs.**readFileSync**(filename,[options])。
+readFile同步的写法就是没有回调函数：fs.**readFileSync**(filename,[options])。如下
 
+### fs.readFileSync() :同步方法
 
+同步方法，没有回调函数，直接返回结果：返回值类型： string or buffer
 
 # fs.writeFile()
 
@@ -165,6 +178,51 @@ fs.writeFile('./test2.txt', 'test test', function(err) {
 # fs.write()
 
 
+
+# fs.fstatSync() :同步
+
+fs.fstatSync(fd[, options])： 同步的方法
+
+- `fd` [](http://url.nodejs.cn/SXbo1v)
+
+- ```
+  options 
+  ```
+
+  - `bigint` [](http://url.nodejs.cn/jFbvuT) 返回的 [](http://nodejs.cn/api/fs.html#fs_class_fs_stats) 对象中的数值是否应为 `bigint`。 **默认值:** `false`。
+
+- 返回: fs.stat
+
+获取文件描述符的属性；
+
+## fs.stat：提供文件信息
+
+是一个对象；
+
+
+
+# fs.stat()：异步
+
+`fs.stat(path[, options], callback)`
+
+参数： callback(err, stats)
+
+Demo:
+
+~~~js
+import { stat } from 'fs';
+
+const pathsToCheck = ['./txtDir', './txtDir/file.txt'];
+
+for (let i = 0; i < pathsToCheck.length; i++) {
+  stat(pathsToCheck[i], (err, stats) => {
+    console.log(stats.isDirectory());
+    console.log(stats);
+  });
+}
+~~~
+
+https://blog.csdn.net/younglao/article/details/77046830
 
 
 

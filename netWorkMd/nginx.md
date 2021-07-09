@@ -1259,11 +1259,7 @@ http {
     log_format  main   XXX        #定义日志格式 代号为main
     access_log  /usr/local/access.log  main     #日志保存地址 格式代码 main
 }
-
-
 ~~~
-
-
 
 # 反向代理 - proxy_pass
 

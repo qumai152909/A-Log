@@ -6,7 +6,7 @@ http://nodejs.cn/api/stream.html#stream_stream
 
 # nodejs流简介
 
-为什么要有流这种形态存在,估计大家应该都清楚,在linux中能用流解决的事情是不会使用别的方法.
+为什么要有流这种形态存在,，估计大家应该都清楚，在linux中能用流解决的事情是不会使用别的方法.
 
 为什么?
 
@@ -16,11 +16,9 @@ http://nodejs.cn/api/stream.html#stream_stream
 
 Nodejs的流也是这么一个目的, 在有限的内存中实现我们操作"海量"数据的目标.
 
-
-
 # 流的4个类型
 
-在当前的nodejs文档中，介绍的流主要分4种：readable,	writable,	transform,	duplex。
+在当前的nodejs文档中，介绍的流主要分**4种：readable,	writable,	transform,	duplex。**
 
 
 
@@ -72,9 +70,7 @@ Node提供了多种方法来消费流数据。
 
 开发者通常应该选择其中一种方法来消费数据，不要在单个流使用多种方法来消费数据。 混合使用 `on('data')`、`on('readable')`、`pipe()` 或异步迭代器，会导致不明确的行为。
 
-
-
-# readable.on('data', cb)事件
+# readable.on('data',  cb)事件
 
 data事件： 当流将数据块传送给消费者后触发。
 

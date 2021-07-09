@@ -1,35 +1,68 @@
-const Client = require('ssh2').Client;
+// SSH2库,  能够与服务器建立ssh连接,  轻松传输(下载和上传)文件
+const Client = require('ssh2').Client; // 创建自己的sftp客户端构造函数
+
+const isWin = /win\d{2}/i.test(process.platform);
+let cwd = process.cwd()+(isWin?'\\':'/'); // 调用node命令执行脚本时的目录
+// 在项目A-Log运行testBin文件，得到console.log(cwd)： /Users/sunyingying23/Github/A-Log/
+// 暂时写死：
+cwd = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/';
 
 
+const readdirFilesSync = require('../utils/readdirFilesSync'); // 遍历文件夹中所有文件
+
+// 启动命令的参数，暂时写死
+const argsStatic = {
+  d: './',
+  r: '/data/static/QA18/fe-vas-h5',
+  h: '10.110.15.1',
+  p: 'qa',
+  u: 'qa',
+  localroot: 'asset-dev',
+  pub: true
+};
+
+
+// 连接服务器
 function connServer() {
   const conn = new Client();
-  const remotePathToList = '/domain/creative/imp/';
+  const remotePathToList = '/webApp/'; // 服务器上要访问的地址
   
-  
-  conn.on('ready', function() {
-    conn.sftp(function(err, sftp) {
+  // ready事件：验证成功
+  conn.on('ready', () => {
+    console.log('Client :: ready');
+    // client.sftp()方法启动 SFTP 会话; 第二个参数是SFTPStream
+    conn.sftp((err, sftp) => {
       if (err) throw err;
       
-      sftp.readdir(remotePathToList, function(err, list) {
+      sftp.readdir(remotePathToList, (err, list) => {
         if (err) throw err;
         console.log('uuuuueeueeueu');
         
         // List the directory in the console
-        console.dir(list);
+        // console.dir(list);
         // Do not forget to close the connection, otherwise you'll get troubles
         conn.end();
       });
     });
-  }).on('error', function(err){
-    console.log(err);
+  }).on('error', err => {
+    console.log(`connect error: ${err}`);
   }).connect({
-    host: '11.50.79.70',
+    host: '120.27.215.50', // Hostname or IP address of the server
     port: '22', // 默认22
-    username: 'sunyingying23',
-    password: 'syy152909.SYY152909.',
+    username: 'root',
+    password: 'SYY152909.',
     interactiveAuth: true,
     tryKeyboard: true,
-  });
+  }); // 尝试连接到服务器
 }
 
-connServer();
+function getLocalFileList() {
+  const { d } = argsStatic;
+  // -d ./ 部署当前目录下所有文件到服务器，此时目录=asset-dev
+  if (d) {
+    const readdirList = readdirFilesSync(cwd);
+    console.log(readdirList);
+  }
+}
+
+getLocalFileList();
