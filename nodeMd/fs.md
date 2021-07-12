@@ -57,6 +57,18 @@ console.log('成功删除了 /tmp/shiyanlou');
 
 返回值是一个数组；
 
+例如src目录下结构：
+
+~~~
+---src/
+		--images/
+				a.png
+				b.png
+		--index.html		
+~~~
+
+fs.readdirSync('srcPath'); 返回值： ['images', 'index.html']
+
 # fs.readFile(): 读取文件
 
 语法：

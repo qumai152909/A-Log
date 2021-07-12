@@ -36,6 +36,7 @@ function isFile(path){
  */
 
 function readdirFilesSync(root) {
+  let result = [];
   if (!isDir(root)) {
     console.log(root +' is not directory');
     return false;
@@ -52,10 +53,14 @@ function readdirFilesSync(root) {
     const fdPath = pathstart && pathstart.index === 0 ? pathjion(root, fd) : pathjion(cwd, root, fd);
     
     // 如果fdPath是一个文件
-    if(isFile(fdPath)) {
-    
+    if(isFile(fdPath) && basename(fdPath).indexOf('.') !== 0) {
+      result.push(fdPath);
+    } else if (isDir(fdPath) && fd.indexOf('.') !== 0) {
+      result = result.concat(readdirFilesSync(fdPath)); // 如果fdPath是文件夹，则递归查找文件夹下面的各个文件
     }
   });
+  
+  return result;
 }
 
 module.exports = readdirFilesSync;

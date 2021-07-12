@@ -7,7 +7,6 @@ let cwd = process.cwd()+(isWin?'\\':'/'); // 调用node命令执行脚本时的�
 // 暂时写死：
 cwd = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/';
 
-
 const readdirFilesSync = require('../utils/readdirFilesSync'); // 遍历文件夹中所有文件
 
 // 启动命令的参数，暂时写死
@@ -23,9 +22,9 @@ const argsStatic = {
 
 
 // 连接服务器
-function connServer() {
+function connServer(fileList) {
   const conn = new Client();
-  const remotePathToList = '/webApp/'; // 服务器上要访问的地址
+  const remotePathToList = '/webApp/'; // 服务器上要访问的目录
   
   // ready事件：验证成功
   conn.on('ready', () => {
@@ -34,12 +33,13 @@ function connServer() {
     conn.sftp((err, sftp) => {
       if (err) throw err;
       
+      // sftp.readdir() = Retrieves a directory listing = 检索目录中的所有内容
       sftp.readdir(remotePathToList, (err, list) => {
         if (err) throw err;
         console.log('uuuuueeueeueu');
         
         // List the directory in the console
-        // console.dir(list);
+        console.dir(list);
         // Do not forget to close the connection, otherwise you'll get troubles
         conn.end();
       });
@@ -56,13 +56,27 @@ function connServer() {
   }); // 尝试连接到服务器
 }
 
+// 获取本地目标目录中所有文件
 function getLocalFileList() {
   const { d } = argsStatic;
   // -d ./ 部署当前目录下所有文件到服务器，此时目录=asset-dev
   if (d) {
     const readdirList = readdirFilesSync(cwd);
-    console.log(readdirList);
+    //console.log(readdirList);
+    return readdirList;
   }
 }
 
-getLocalFileList();
+// 主文件
+function upFiles() {
+  const fileList = getLocalFileList();
+  
+  // --pub 开始运行命令
+  if (argsStatic.pub) {
+    fileList && fileList.length && connServer(fileList);
+  } else {
+    console.log('如果运行，请添加运行命令 --pub');
+  }
+}
+
+upFiles();

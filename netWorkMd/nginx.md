@@ -4,6 +4,8 @@ https://zhuanlan.zhihu.com/p/34943332 🌟🌟🌟🌟🌟🌟
 
 https://mp.weixin.qq.com/s/TYM83F2O-keMvn4ZYa5nqw 🍓🍓🍓🍓🍓🍓🍓🍓🍓🍓
 
+https://zqianduan.com/pages/nginx-rewrite-rule.html#rewrite-%E5%AE%9E%E4%BE%8B🍓🍓🍓
+
 https://mp.weixin.qq.com/s/XoqGvYBabW8YBl9xEeNYZw
 
 https://juejin.cn/post/6844904129987526663 安装和介绍

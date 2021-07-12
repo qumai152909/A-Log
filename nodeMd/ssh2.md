@@ -133,8 +133,9 @@ fastGet(< *string* >remotePath, < *string* >localPath[, < *object* >options], < 
 
 ~~~js
 var conn = new Client();
+
 conn.on('ready', function() {
-  
+    // client.sftp()方法启动 SFTP 会话; 第二个参数是SFTPStream
     conn.sftp(function(err, sftp) {
         if (err) throw err;
         
