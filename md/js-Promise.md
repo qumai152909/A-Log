@@ -41,7 +41,7 @@ createAudioFileAsync(audioSettings).then(successCallback, failureCallback);
 
 我们把这个称为 *异步函数调用*，这种形式有若干优点，下面我们将会逐一讨论。
 
-# 创建Promise 🍓
+# 创建promise 🍓
 
 **创建一个promise对象**
 
@@ -145,11 +145,8 @@ myFirstPromise.then(function(successMessage){
 new Promise( function(resolve, reject) {...} /* executor */  )
 ```
 
-- 在 executor 函数中调用 resolve 函数后，会触发 promise.then 设置的回调函数；而调用 reject 函数后，会触发 promise.catch 设置的回调函数。
-
-
-
-
+- 在 executor 函数中调用 resolve 函数后，会触发 promise.then 设置的回调函数；
+- 而调用 reject 函数后，会触发 promise.catch 设置的回调函数。
 
 
 
@@ -203,9 +200,87 @@ p1执行then返回的新实例p2的状态，取决于then中哪一个方法会�
 
 
 
+# then与catch 返回值
+
+`then方法与catch方法均会返回一个Promise对象`（即使return 为某个值，或者throw error，或者不显式返回值）；
+
+*then的返回值情况如下：*
+
+then方法返回一个promise对象，而这个promise对象的状态是那个？这个状态和then中回调函数的返回值有关：
+
++ 回调函数返回一个值：那么then返回的promise成为接受状态，并且将返回值作为接受状态的回调函数的参数值。
++ 回调函数抛出一个错误：那么then返回的promise成为拒绝状态，并且将抛出的错误作为拒绝状态的回调函数的参数值。
++ 回调函数返回一个已经是接受状态的promise对象：那么then返回的promise也会成为接受状态，并且将那个promise的接受状态的回调函数的参数值，作为该返回的promise的接受状态回调函数的参数值；
++ 回调函数返回一个已经是拒绝状态的promise对象： ......
++ 回调函数返回一个未定状态（pending）的promise对象： 那么then返回的promise状态也是未定的，**并且它的终态与那个promise的终态相同；**同时，它变为终态时，调用的回调函数参数，和那个promise变为终态时的回调函数的参数是相同的。
 
 
 
+简单来说，就是分为**return 值（无return的情况下即返回undefined，也是返回值）`，`throw error`， `return Promise**
+
+catch为then的语法糖，返回值情况基本和上面then一样。
+
+### return一个具体的值
+
+返回的Promise会成为`Fulfilled`状态：
+
+看例子
+
+```js
+var example = new Promise((fulfill, reject)=>{
+    let i = 1;
+    fulfill(i);
+})
+example
+.then((value) => { console.log(value); value++; return value;  })
+.then((value) => {console.log(value);                        });
+```
+
+输出结果如下：1 2
+
+回到上面的疑问，如果`没有return呢，那么就会返回undefined`: 输出结果就是1 undefined
+
+### throw error
+
+返回的Promise会成为`Rejected`状态，
+`下一步执行catch中的回调函数`或者`then的第二个回调函数参数`
+
+这里出现了之前一直搞混的东西。
+再次重复这一句话：`catch为then的语法糖，它是then(null, rejection)的别名。`
+**也就是说，catch也是then，它用于捕获错误**，它的参数也就是是then的第二个参数。
+
+**所以，假设catch中如return 值的话，catch返回的新的promise对象也会是接受状态。**
+
+看看例子：
+
+```js
+var example = new Promise((fulfill, reject)=>{
+    let i = 1;
+    reject(i);
+})
+example
+.catch(()=>{console.log('我是第一个catch的回调函数'); return 1;})
+.then(() =>{console.log('我是第一个then的回调函数');    throw Error    })
+.catch(()=>{console.log('我是第二个catch的回调函数')})
+.then(() => {console.log('我是第二个then的回调函数')})
+```
+
+结果：我是第一个catch的回调函数  我是第一个then的回调函数     我是第二个catch的回调函数 我是第二个then的回调函数
+
+调用reject函数后，promise变为rejected状态，故`执行第一个catch的回调函数`
+第一个catch的回调函数`return 1`，故`执行第一个then的回调函数`
+第一个then的回调函数`throw Error`，故`执行第二个catch的回调函数`
+第二个catch的回调函数`ruturn undefined（如上文所言）`，故`执行第二个then的回调函数`
+
+### return Promise的情况
+
+至于return Promise的情况下，其实同理。
+
+
+
+
+
+https://segmentfault.com/a/1190000015561508
 
 
 
