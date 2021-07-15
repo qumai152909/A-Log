@@ -605,27 +605,33 @@ location / {
 
 # rewrite
 
+https://www.jianshu.com/p/10ecc107b5ee
+
 ## flag: last vs break:
 
 **last和break用来实现URL重写，浏览器地址栏的URL地址不变**，但在服务器访问的程序及路径发生了变化。
 
-redirect和permanent用来实现URL跳转，浏览器地址会显示跳转后的URL地址。
+redirect和permanent： 用来实现URL跳转，*浏览器地址会显示跳转后的URL地址：*
 
-last和break标记的实现功能类似，但二者之间有细微的差别，使用alias指令时必须用last标记，使用proxy_pass指令时要使用break标记。
+```xml
+	- redirect：  返回302临时重定向，浏览器地址会显示跳转后的URL地址；
+  - permanent： 返回301永久重定向，浏览器地址栏会显示跳转后的URL地址；
+```
 
-在`location`里，一旦返回`break`则直接生效并停止后续的匹配`location`
+last和break标记，功能类似，但有细微差别，使用alias指令时必须用last，使用proxy_pass指令时要使用break标记。
+
+在`location`里，一旦返回`break`则直接生效，并停止后续的location匹配：
 
 ```nginx
 server {
     location / {
-        rewrite /last/  /q.html last;
-        rewrite /break/ /q.html break;
+        rewrite /last/  /q.html   last;   # 本条规则完成后，继续向下匹配新的location URI规则
+        rewrite /break/ /q.html   break;  # 本条规则完成后，终止匹配，不再匹配后面的location规则
     }
     location = /q.html {
         return 400;
     }
 }
-
 ```
 
 - 访问`/last/`时重写到`/q.html`，然后使用新的`uri`再匹配，正好匹配到`locatoin = /q.html`然后返回了`400`
@@ -637,15 +643,11 @@ https://blog.csdn.net/weixin_44580977/article/details/99655747
 
 ***
 
-## break和last在location {}外
+## break和last在location { } 外
 
-```
-格式：rewrite xxxxx  break;
-```
+当有location时，它还会去执行location的配置（请求要匹配该location）。
 
-当配置文件中有location时，它还会去执行location{}段的配置（请求要匹配该location）。
-
-示例3（break后面还有location段）：
+示例3（break后面还有location）：
 
 ```nginx
 server{
@@ -653,14 +655,13 @@ server{
     server_name www.a.com;
     root /data/wwwroot/www.a.com;
 
-    rewrite /1.html /2.html break; # break后面还有location, 会匹配loaction
+    rewrite /1.html /2.html break; # break后面还有location, 会匹配loaction；但不会执行下面一行的rewrite
     rewrite /2.html /3.html;
     
     location /2.html {
         return 403;
     }
 }
-
 ```
 
 当请求1.html时，最终会返回403状态码，说明它去匹配了break后面的location{}配置。
@@ -675,7 +676,7 @@ server{
     root /data/wwwroot/www.a.com;
     
     location / {
-        rewrite /1.html /2.html break;;
+        rewrite /1.html /2.html break; # 不执行下一行的rewrite；也不匹配下面的location
         rewrite /2.html /3.html;
     }
   
@@ -687,10 +688,11 @@ server{
         rewrite /3.html /b.html;
     }
 }
-
 ```
 
-当请求/1.html，最终会访问/2.html。 如果没有break，当请求/1.html，最终会访问/b.html。
+当请求/1.html，最终会访问/2.html。 
+
+如果没有break，当请求/1.html，最终会访问/b.html。
 
 *在location{}内部，遇到break，本location{}内，以及后面的所有location{}内的所有指令都不再执行。*
 
@@ -708,20 +710,17 @@ server{
         rewrite /1.html /2.html last;
         rewrite /2.html /3.html;
     }
-    location /2.html
-    {
+    location /2.html {
         rewrite /2.html /a.html;
     }
-    location /3.html
-    {
+    location /3.html {
         rewrite /3.html /b.html;
     }
 }
-
 ```
 
 当请求/1.html，最终会访问/a.html
-在location{}内部，遇到last，本location{}内后续指令不再执行，而重写后的url再次从头开始，从头到尾匹配一遍规则。
+在location{}内部，遇到last，本location{}内后续指令不再执行，**而重写后的url再次从头开始，从头到尾匹配一遍规则。**
 
 ***
 
@@ -729,8 +728,8 @@ server{
 
 结论
 
-- 当rewrite规则在location{}外，break和last作用一样，遇到break或last后，其后续的rewrite/return语句不再执行。但后续有location{}的话，还会近一步执行location{}里面的语句,当然前提是请求必须要匹配该location。
-- 当rewrite规则在location{}里，遇到break后，本location{}与其他location{}的所有rewrite/return规则都不再执行。
+- 当rewrite规则在location{}外，break和last作用一样，遇到break或last后，其后续的rewrite/return语句不再执行。但后续有location{}的话，还会近一步执行location{}里面的语句, 当然前提是请求必须要匹配该location。
+- 当rewrite规则在location{}里，遇到break后，本location{}与其他location{}的所有rewrite/return规则都不再执行。【如果本location的break后面，有其他语句，比如proxy_pass，回执行吗？】
 - 当rewrite规则在location{}里，遇到last后，本location{}里后续rewrite/return规则不执行，但重写后的url再次从头开始执行所有规则，哪个匹配执行哪个。
 
 
@@ -744,7 +743,7 @@ In your rewrite, the `^` signifies the start of the string（起始位置）
 the `(.*)` says to match anything,
 
 ```perl
-RewriteRule ^(.*)$ /index.php/$1 [L]
+RewriteRule ^(.*)$  /index.php/$1   [L]
 ```
 
 So if I type in `www.example.com/tacos-are-good`, then `$1 = "tacos-are-good"`. So your end rewrite will actually be `www.example.com/index.php/tacos-are-good`.
@@ -1291,7 +1290,7 @@ Nginx的[官网](http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_
 
 ***
 
-### 例如1： 
+### 基本示例1： 
 
 ~~~nginx
 # 访问  http://aaa-bbb.com/pfApi/getName
@@ -1372,9 +1371,11 @@ location /proxy {
 
 **由以上规则可以看出，当 `proxy_pass url` 中包含路径时，结尾的 `/` 最好同 `location` 匹配规则一致。**
 
-### 同时存在rewrite 和 proxy_pass
+### rewrite 和 proxy_pass同时存在
 
 如果在location中使用了“rewrite”指令（break）对请求的uri进行了修改，那么proxy_pass指令中的uri将会被忽略，被rewrite之后的全量uri将会传递给proxy server (the full changed request URI is passed to the proxy server.)。
+
+*注意：经过实践，即使rewrite写在了location外面，也会有同样的结果*
 
 ~~~nginx
 location /name {  
@@ -1388,9 +1389,7 @@ http://exmaple.org/name/zhangsan，
 
 首先，被rewrite到   http://exmaple.org/user?name=zhangsan
 
-然后，将会转发到    http://127.0.0.1/users?name=zhangsan 
-
-
+然后，将会代理到    http://127.0.0.1/users?name=zhangsan 
 
 ### proxy_set_header
 
