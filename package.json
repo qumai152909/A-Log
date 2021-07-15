@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@jdplus/pui": "^1.0.4",
     "ee-publish": "^2.0.0"
   },
   "scripts": {

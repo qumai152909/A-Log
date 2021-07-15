@@ -276,6 +276,42 @@ example
 
 至于return Promise的情况下，其实同理。
 
+```js
+var p1 = Promise.resolve(42)
+p1.then((value)=>{
+    //第一种情况，返回一个Promise
+    return new Promise(function(resolve,rejected){
+        resolve(value+1)
+    })
+
+    //第二种情况，返回一个值
+     return value+2;
+
+    //第三种情况，新建一个promise，使用reslove返回值
+    const p2 = new Promise(function(resolve,rejected){
+        resolve(value+3)
+    })
+
+   //第四种情况，新建一个promise，使用return返回值
+    const p2 = new Promise(function(resolve,rejected){
+        return(value+4)
+    })
+
+		//第五种情况，没有返回值
+	  return undefined
+}).then((value)=>{
+   console.log(value)
+})
+```
+
+第一种情况，新建promise的resolve传出的值将作为then方法返回的promise的resolve的值传递出，console将打印出43
+
+第二种情况，return的值将作为then方法返回的promise的resolve的值传递出，console将打印出44
+
+以上三、四、五种情况，其实都是一样的问题，构造then方法的函数没有向then方法返回的promise对象的resolve方法传递值。因此resolve返回的都是undfined;
+
+
+
 
 
 
