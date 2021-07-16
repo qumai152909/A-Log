@@ -87,7 +87,7 @@ myFirstPromise.then(function(successMessage){
 });
 ~~~
 
-基础示例2: 创建一个promise函数
+基础示例2: 创建一个图片加载的promise函数
 
 ~~~js
  function imgLoad(url) {
@@ -135,7 +135,27 @@ myFirstPromise.then(function(successMessage){
   });
 ~~~
 
+示例3: 将 Node 中的一个回调方法 fs.readFile 转换为 Promise的示例：
 
+~~~js
+function readFilePromise(filename) {
+  // Promise.reject()
+ 	if (!filename) {
+    return Promise.reject(new Error("Filename not specified"));
+  } 
+  
+  return new Promise((resolve, reject) => {
+    fs.readFile(filename, 'utf8', (err, data) => {
+      if (err) reject(err);
+      else resolve(data);
+    })
+  })
+}
+
+readFilePromise('index.html')
+  .then(data => console.log(data))
+  .catch(e => console.log(e))
+~~~
 
 # new Promise
 
@@ -310,17 +330,7 @@ p1.then((value)=>{
 
 以上三、四、五种情况，其实都是一样的问题，构造then方法的函数没有向then方法返回的promise对象的resolve方法传递值。因此resolve返回的都是undfined;
 
-
-
-
-
-
-
 https://segmentfault.com/a/1190000015561508
-
-
-
-
 
 # Catch的后续链式
 
@@ -516,13 +526,13 @@ doSomething()
 .catch(error => console.log(error));
 ```
 
-
-
 # 优点
 
 通过捕获所有的错误（catch），Promise 解决了回调地狱的基本缺陷。这对于构建异步操作的基础功能而言是很有必要的。
 
 避免了地狱嵌套，让异步代码更易于阅读。
+
+
 
 
 
