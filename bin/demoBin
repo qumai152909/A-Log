@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+
+console.log('----- start demo bin -----');
+
+const args = process.argv.slice(2); // 获取命令行参数
+
+
+if (args[0] === 'isUser') {
+  require('./demo1/isUser')
+}
+
+if (args[0] === 'demo1') {
+  require('./demo1/demo1')()
+}
+
+if (args[0] === 'demo2') {
+  require('./demo1/demo2')()
+}
+
+if (args[0] === 'txt') {
+  require('./lib/txt')
+}
+
+if (args[0] === 'prams') {
+  require('./lib/showPrams')
+}
+
+if (args[0] === 'upfiles') {
+  require('./lib/upfiles')
+}

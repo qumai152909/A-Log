@@ -479,8 +479,6 @@ for (const f of [func1, func2, func3]) {
 }
 ```
 
-
-
 # 嵌套
 
 嵌套 Promise 是一种可以限制 `catch` 语句的作用域的控制结构写法。

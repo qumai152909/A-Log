@@ -2,13 +2,15 @@
 
 # 启动命令
 
-启动命令：在项目A-Log根目录下面，控制台输入：
+启动命令：在项目A-Log根目录下面，控制台输入其中一个命令：
 
 ~~~bash
-./bin/testBin 
+./bin/testBin
 
-./bin/testBin upfile
+./bin/testBin upfiles
 ~~~
+
+## 启动/demo1/user.js文件
 
 
 
@@ -79,10 +81,10 @@ function readdirFilesSync(root) {
   rootFiles.forEach(fd => {
     const pathreg = /^\/|([A-Z]:\\)/; // 匹配/开头，或者E:\\
     const pathstart = pathreg.exec(root); // ["/", undefined, index: 0, input: "/Users/sunyingying23/Github/A-Log/bin/asset-dev/", groups: undefined]
-    
+
     // 得出fd的完整路径: '/Users/sunyingying23/Github/A-Log/bin/asset-dev/main.html'
     const fdPath = pathstart && pathstart.index === 0 ? pathjion(root, fd) : pathjion(cwd, root, fd);
-    
+
     // 如果fdPath是一个文件
     if(isFile(fdPath) && basename(fdPath).indexOf('.') !== 0) {
       result.push(fdPath);
@@ -90,7 +92,7 @@ function readdirFilesSync(root) {
       result = result.concat(readdirFilesSync(fdPath)); // 如果fdPath是文件夹，则递归查找文件夹下面的各个文件
     }
   });
-  
+
   return result;
 }
 
@@ -121,10 +123,6 @@ console.log(readdirList);
 ]
 ~~~
 
-
-
-
-
 # upfiles.js-连接服务器
 
 ~~~js
@@ -135,15 +133,15 @@ const Client = require('ssh2').Client; // 创建自己的sftp客户端构造函�
 function connServer() {
   const conn = new Client();
   const remotePathToList = '/webApp/';
-  
+
   conn.on('ready', () => {
     conn.sftp(function(err, sftp) {
       if (err) throw err;
-      
+
       sftp.readdir(remotePathToList, (err, list) => {
         if (err) throw err;
         console.log('uuuuueeueeueu');
-        
+
         // List the directory in the console
         console.dir(list); // 输出1
         // Do not forget to close the connection, otherwise you'll get troubles

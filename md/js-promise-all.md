@@ -40,7 +40,7 @@ Promise.all(filenames.map(readFilePromise))
 
 有时同时运行一堆 Promise 可能会出现问题。
 
-比如，如果尝试使用 Promise.all 的 API 去检索一堆资源，则可能会在达到速率限制时开始响应[429错误](https://link.zhihu.com/?target=https%3A//httpstatuses.com/429)。
+比如，如果尝试使用 Promise.all 的 API 去检索一堆资源，则可能会在达到**速率限制**时开始**响应[429错误](https://link.zhihu.com/?target=https%3A//httpstatuses.com/429)。**
 
 一种解决方案是串行运行 Promise，也就是一个接一个地运行。
 
@@ -67,21 +67,17 @@ Promise.resolve()
   .then(_ => api.deleteItem(5));
 ~~~
 
-
-
-
+**函数编程：**
 
 ~~~js
     function workMyCollection(arr) {
-        return arr.reduce(function(promise, item) {
-            return promise.then(function(result) {
-                return doSomethingAsyncWithResult(item, result);
-            }, q());
-        });
+      return arr.reduce((promise, item) => {
+        return promise.then(result => doSomethingAsyncWithResult(item, result));
+      }, Promise.resolve());
     }
 ~~~
 
-
+*arr.reduce()的返回值：是函数累计处理的结果。*
 
 
 

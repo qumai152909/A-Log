@@ -1,13 +1,14 @@
 process.stdin.on('end', function() {
-  process.stdout.write('end');
+  process.stdout.write('end'); // stdout ：输出流
 });
 
-
+// stdin 标准输入流
 function gets() {
   process.stdin.setEncoding('utf8');
   
   process.stdin.on('data', (chunk) => {
     console.log('start!');
+    
     // 去掉下一行可一直监听输入，即保持标准输入流为开启模式
     process.stdin.pause();
     

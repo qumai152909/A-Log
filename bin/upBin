@@ -2,22 +2,17 @@
 
 const fs = require('fs');
 
-
-console.log('ssss test bin');
+console.log('start test bin');
 
 const args = process.argv.slice(2);
 
 
-if (args[0] === 'user') {
-  require('./lib/user')
-}
-
 if (args[0] === 'demo1') {
-  require('./lib/demo1')()
+  require('./demo1/demo1')()
 }
 
 if (args[0] === 'demo2') {
-  require('./lib/demo2')()
+  require('./demo1/demo2')()
 }
 
 if (args[0] === 'txt') {
@@ -28,6 +23,6 @@ if (args[0] === 'prams') {
   require('./lib/showPrams')
 }
 
-if (args[0] === 'upfile') {
-  require('./lib/upfile')
+if (args[0] === 'upfiles') {
+  require('./lib/upfiles')
 }

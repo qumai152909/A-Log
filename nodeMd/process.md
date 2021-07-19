@@ -27,6 +27,33 @@ node index.js 1991 name=chenfangxu --v "lalla"
 
 异步任务，
 
+
+
+# process.stdin.pause() end ()
+
+```bash
+process.stdin.end();
+process.stdin.pause(); // readable.pause()
+```
+
+**process.stdin.end()方法**
+
+不会主动结束；如果输入了结束字符，才会结束。在Mac上，结束字符操作是： CTRL + C 或者CTRL + D；
+
+[Readable Streams](https://nodejs.org/api/stream.html#stream_class_stream_readable)在触发`"end"`事件之前，期望EOT(传输结束)字符。在bash中，可以使用CTRL + D来完成。
+
+**readable.pause()**
+
+`readable.pause()` 方法使流动模式的流停止触发 [`'data'`](http://nodejs.cn/api/stream.html#stream_event_data) 事件；并切换出流动模式。
+
+碰到此方法，在bash中，会直接退出输入模式；
+
+如果存在 `'readable'` 事件监听器，则 `readable.pause()` 方法不起作用。
+
+*相反方法是：`readable.resume()` 方法*： 将被暂停的可读流恢复触发 [`'data'`](http://nodejs.cn/api/stream.html#stream_event_data) 事件，并将流切换到流动模式。
+
+http://nodejs.cn/api/stream.html#stream_readable_pause
+
 # process.chdir()
 
 切换工作目录到指定目录。
