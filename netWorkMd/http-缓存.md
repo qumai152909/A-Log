@@ -37,8 +37,6 @@ https://zhuanlan.zhihu.com/p/44789005
 
 然而常见的 HTTP 缓存只能存储 [`GET`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/GET) 响应，对于其他类型的响应则无能为力。（一般只有GET请求才会被缓存）
 
-
-
 # 浏览器缓存过程🍓
 
 浏览器第一次加载资源，服务器返回200，浏览器将资源文件从服务器上请求下载下来，并把response header及该请求的返回时间一并缓存；
