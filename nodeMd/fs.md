@@ -64,7 +64,7 @@ console.log('成功删除了 /tmp/shiyanlou');
 		--images/
 				a.png
 				b.png
-		--index.html		
+		--index.html
 ~~~
 
 fs.readdirSync('srcPath'); 返回值： ['images', 'index.html']
@@ -103,8 +103,8 @@ fs.readFile('./test.txt', function(err, data) {
         throw err;
     }
     // 读取文件成功 ： 这是原始二进制数据在缓冲区中的内容。
-    console.log(data); // <Buffer 6c 69 6e 65 20 6f 6e 65 0a 6c 69 6e 65 20 74 77 6f 0a> 
- 
+    console.log(data); // <Buffer 6c 69 6e 65 20 6f 6e 65 0a 6c 69 6e 65 20 74 77 6f 0a>
+
     console.log(data.toString()); // line one  line two
 });
 
@@ -141,7 +141,7 @@ fs.writeFile(file, data, [options], callback)
 
 当 `file` 是文件描述符时，其行为类似于直接调用 `fs.write()`（推荐）。
 
-如果 `data` 是缓冲区（Buffer类型的数据），则忽略 `encoding` 选项。 
+如果 `data` 是缓冲区（Buffer类型的数据），则忽略 `encoding` 选项。
 
 如果 `data` 是普通对象，则它必须具有 `toString` 方法。
 
@@ -198,7 +198,7 @@ fs.fstatSync(fd[, options])： 同步的方法
 - `fd` [](http://url.nodejs.cn/SXbo1v)
 
 - ```
-  options 
+  options
   ```
 
   - `bigint` [](http://url.nodejs.cn/jFbvuT) 返回的 [](http://nodejs.cn/api/fs.html#fs_class_fs_stats) 对象中的数值是否应为 `bigint`。 **默认值:** `false`。
@@ -239,21 +239,52 @@ https://blog.csdn.net/younglao/article/details/77046830
 
 
 
+# 复制文件
 
+在一行代码中复制文件的好方法：
+~~~js
+var fs = require('fs');
 
+fs.createReadStream('test.log').pipe(fs.createWriteStream('newLog.log'));
+~~~
 
+在节点v8.5.0中，添加了copyFile
+~~~js
+const fs = require('fs');
 
+// destination.txt will be created or overwritten by default.
+fs.copyFile('source.txt', 'destination.txt', (err) => {
+  if (err) throw err;
+  console.log('source.txt was copied to destination.txt');
+});
+~~~
 
+相同的机制，但这增加了错误处理：
+~~~js
+function copyFile(source, target, cb) {
+  var cbCalled = false;
 
+  var rd = fs.createReadStream(source);
+  rd.on("error", function(err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function(err) {
+    done(err);
+  });
+  wr.on("close", function(ex) {
+    done();
+  });
+  rd.pipe(wr);
 
-
-
-
-
-
-
-
-
+  function done(err) {
+    if (!cbCalled) {
+      cb(err);
+      cbCalled = true;
+    }
+  }
+}
+~~~
 
 
 # 其他： 文件系统标志
@@ -265,7 +296,7 @@ http://nodejs.cn/api/fs.html#fs_file_system_flags
 - `'a'`: 打开文件进行追加。 如果文件不存在，则创建该文件。
 - `'r'`: 打开文件进行读取。 如果文件不存在，则会发生异常。
 - `'w'`: 打开文件进行写入。文件不存在则创建，存在则清空。写的时候会清空。如果不要清空要追加，需要改为a
-- 
+-
 
 
 
@@ -274,8 +305,8 @@ http://nodejs.cn/api/fs.html#fs_file_system_flags
 
 
 
-
-
+# 参考链接
+https://blog.csdn.net/qinlulucsdn/article/details/108608073  node 进行文件夹及文件 复制到另一个文件夹 文件内容替换
 
 
 

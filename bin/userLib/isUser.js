@@ -1,6 +1,6 @@
-const users = require('../data/user.json'); // 静态数据文件
-
 // 目的：判断输入的用户名和密码，是否和上面文件中已有的信息匹配
+
+const users = require('../data/user.json'); // 静态数据文件
 
 let username = '';
 

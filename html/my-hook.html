@@ -13,16 +13,27 @@
 <div id="root"></div>
 <script type="text/babel">
   const {useState, useEffect} = React;
+
+  function setInitValue() {
+    let value;
+    try {
+      const localValue = window.localStorage.getItem('my-app-count') || 0;
+      value = JSON.parse(localValue);
+    } catch (e) {
+      value = 0;
+    }
+    return value;
+  }
   
   function Counter() {
-    const [count, setCount] = useState(0);
-    
-    const increment = () => setCount(count + 1);
+    const [count, setCount] = useState(setInitValue);
     
     useEffect(() => {
-      document.title = `Your ${count} clicked times.`;
+      window.localStorage.setItem('my-app-count', count)
     }, [count]);
     
+    const increment = () => setCount(count + 1);
+  
     return (
       <div>
         <h2>{count}</h2>

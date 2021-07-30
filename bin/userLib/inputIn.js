@@ -12,7 +12,7 @@ function gets() {
     // 去掉下一行可一直监听输入，即保持标准输入流为开启模式
     process.stdin.pause();
     
-    assert.equal(typeof chunk, 'string');
+    assert.equal(typeof chunk, 'string'); // todo
     console.log(`---: ${chunk}`);
   });
   

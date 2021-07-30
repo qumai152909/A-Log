@@ -94,6 +94,7 @@ function syncFile(fp, sftp) {
     }
   })
 }
+
 function syncHosts (args, fileList) {
   const {h: hosts, pub} = args
   const host = hosts.pop()

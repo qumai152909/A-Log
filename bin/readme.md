@@ -5,9 +5,13 @@
 启动命令：在项目A-Log根目录下面，控制台输入其中一个命令：
 
 ~~~bash
-./bin/testBin
+./bin/userBin isUser
+./bin/userBin inputIn
+./bin/userBin createUser
+./bin/userBin showTxtContent
+./bin/userBin prams
 
-./bin/testBin upfiles
+./bin/upFilesBin upFiles
 ~~~
 
 ## 启动/demo1/user.js文件

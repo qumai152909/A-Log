@@ -1,13 +1,16 @@
-// SSH2库,  能够与服务器建立ssh连接,  轻松传输(下载和上传)文件
+// SSH2库, 能够与服务器建立ssh连接,  轻松传输(下载和上传)文件
+
 const Client = require('ssh2').Client; // 创建自己的sftp客户端构造函数
 
 const isWin = /win\d{2}/i.test(process.platform);
+
+// 在项目A-Log运行upFilesBin文件，cwd = /Users/sunyingying23/Github/A-Log/
 let cwd = process.cwd()+(isWin?'\\':'/'); // 调用node命令执行脚本时的目录
-// 在项目A-Log运行testBin文件，得到console.log(cwd)： /Users/sunyingying23/Github/A-Log/
-// 暂时写死：
+
+// 暂时写死：todo
 cwd = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/';
 
-const readdirFilesSync = require('../utils/readdirFilesSync'); // 遍历文件夹中所有文件
+const readdirFilesSync = require('../utils/readdirFilesSync'); // 同步遍历文件夹中所有文件
 
 // 启动命令的参数，暂时写死
 const argsStatic = {
