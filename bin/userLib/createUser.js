@@ -3,7 +3,7 @@ const resolvePath = require('path').resolve;
 
 const inputPromise = require('../utils/inputPromise.js');
 
-function demo2() {
+function createUser() {
   const jackon = {};
   
   inputPromise('请输入姓名：')
@@ -21,8 +21,7 @@ function demo2() {
     .then(() => {
       process.stdin.pause();
   
-  
-      const fpath = resolvePath(__dirname, '../data/demo2.json');
+      const fpath = resolvePath(__dirname, '../data/createUser.json');
   
       fs.writeFile(fpath, JSON.stringify(jackon), 'utf8', err => {
         if (err) {
@@ -33,4 +32,4 @@ function demo2() {
     .catch(err => console.log(err.message));
 }
 
-module.exports = demo2;
+module.exports = createUser;

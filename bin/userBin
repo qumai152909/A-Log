@@ -6,7 +6,6 @@ console.log('----- start demo bin -----');
 
 const args = process.argv.slice(2); // 获取命令行参数
 
-
 if (args[0] === 'isUser') {
   require('./demo1/isUser')
 }

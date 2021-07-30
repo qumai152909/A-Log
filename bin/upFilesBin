@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const chalk = require('chalk');
+
+console.log(chalk.blue('----- start up files bin -----'));
+
+const args = process.argv.slice(2);
+
+if (args[0] === 'upFiles') {
+  require('./lib/upFiles')
+}
