@@ -10,15 +10,98 @@
 ./bin/userBin createUser
 ./bin/userBin showTxtContent
 ./bin/userBin prams
+./bin/userBin prams -d ./  -r /data/fe/release/fe-vas-h5 -h q6 --localroot asset-dev --pub
 
-./bin/upFilesBin upFiles
+./bin/userBin mkdir
+./bin/userBin copeOneFile
+
+./bin/userBin copyFolderSync -f bin/asset-dev -t copyAssetDevSync
+
+./bin/pubBin upFiles
 ~~~
 
-## 启动/demo1/user.js文件
+# 参数
+
+~~~bash
+./bin/userBin prams -d ./  -r /data/fe/release/fe-vas-h5 -h q6 --localroot asset-dev --pub
+
+# 输出参数：
+{
+	_: [ 'prams' ],
+  d: './',
+  r: '/data/fe/release/fe-vas-h5',
+  h: 'q6',
+  localroot: 'asset-dev',
+  pub: true
+}
+~~~
+
+o r
+
+~~~bash
+./bin/userBin prams -d ./ -r /data/static/QAPUB/fe-vas-h5 -h 10.110.15.1 -p qa -u qa --localroot asset-dev --pub
+
+# 输出参数：
+
+{
+	_: [ 'prams' ],
+  d: './',
+  r: '/data/static/QAPUB/fe-vas-h5',
+  h: '10.110.15.1',
+  p: 'qa',
+  u: 'qa',
+  localroot: 'asset-dev',
+  pub: true
+}
+
+~~~
+
+对应addServer中的参数
+
+​		h = host = '10.110.15.1'
+
+​	   local = localRoot = "asset-dev"
+
+```json
+{
+  "Q6": {
+    "ip": "12.122.12.66",
+    "port": 22,
+    "user": "syy",
+    "password": "****",
+    "local": "asset-dev",
+    "remote": "/data/static/QA6/fe-vas-h5"
+  },
+  "12.122.12.66": {
+    "ip": "12.122.12.66",
+    "port": 22,
+    "user": "syy",
+    "password": "****",
+    "local": "asset-dev",
+    "remote": "/data/static/QA6/fe-vas-h5"
+  }
+}
+```
+
+# 正则
+
+~~~js
+    let {local, remote, ip} = remoteHost;
+
+    local = local.replace(/^(\\|\/)|(\\|\/)$/g, ''); // 去掉首位的‘/’ 、 或者‘\\’
+    remote = remote.replace(/^(\\|\/)|(\\|\/)$/g, '');
+
+'\\asset\\'.replace(/^(\\|\/)|(\\|\/)$/g, ''); // asset
+'/asset/'.replace(/^(\\|\/)|(\\|\/)$/g, '');  // asset
+~~~
 
 
 
-# readdirFilesSync.js-目录下所有文件地址
+
+
+# readdirFilesSync.js
+
+**获取目录下所有文件地址**
 
 目的： 找出目标文件下，所有文件和子孙文件的绝对路径，并返回这些文件绝对路径组成的数组
 
@@ -36,34 +119,15 @@
 
 ~~~js
 const fs = require('fs');
+const chalk = require('chalk');
+
 const resolve = require('path').resolve;
 const basename = require('path').basename;
 const pathjion = require('path').join;
 const extname = require('path').extname;
 const cwd = process.cwd();
 
-// 数据类型判断
-function isType(type) {
-  return function(obj) {
-    return {}.toString.call(obj) == "[object " + type + "]"
-  }
-}
-const isObject = isType("Object");
-const isString = isType("String");
-const isArray = Array.isArray;
-const isFunction = isType("Function");
-const isBoolean = isType("Boolean");
-
-// 判断是否是一个目录
-function isDir (path){
-  return !!fs.statSync(path).isDirectory();
-}
-// 判断是否是一个文件
-function isFile(path){
-  return !!fs.statSync(path).isFile();
-}
-
-// root = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/'
+const { isDir, isFile } = require('../utils/getType');
 
 /**
  * readdirSync is fsk sub module return files array
@@ -72,14 +136,16 @@ function isFile(path){
  * @filter ['.js','.css'] or '.js' or ''
  */
 
+// root = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/'
+
 function readdirFilesSync(root) {
   let result = [];
   if (!isDir(root)) {
-    console.log(root +' is not directory');
+    console.log(chalk.red(root +' is not directory'));
     return false;
   }
 
-  // 得到root目录下的所有内容
+  // 同步得到root目录下的所有内容名称组成的数组, fs.readdirSync = Reads the content's filenames of the directory.
   const rootFiles = fs.readdirSync(root); // ['images', 'main.html']
 
   rootFiles.forEach(fd => {
@@ -89,7 +155,7 @@ function readdirFilesSync(root) {
     // 得出fd的完整路径: '/Users/sunyingying23/Github/A-Log/bin/asset-dev/main.html'
     const fdPath = pathstart && pathstart.index === 0 ? pathjion(root, fd) : pathjion(cwd, root, fd);
 
-    // 如果fdPath是一个文件
+    // 如果fdPath是一个文件， basename=main.html
     if(isFile(fdPath) && basename(fdPath).indexOf('.') !== 0) {
       result.push(fdPath);
     } else if (isDir(fdPath) && fd.indexOf('.') !== 0) {
@@ -106,15 +172,22 @@ module.exports = readdirFilesSync;
 **调用readdirFilesSync函数**
 
 ~~~js
-const isWin = /win\d{2}/i.test(process.platform);
-let cwd = process.cwd()+(isWin?'\\':'/'); // 调用node命令执行脚本时的目录
-// 在项目A-Log运行testBin文件，得到console.log(cwd)： /Users/sunyingying23/Github/A-Log/
+const readdirFilesSync = require('../utils/readdirFilesSync'); // 同步遍历文件夹中所有文件
 
-// 暂时写死：
+// SSH2库, 能够与服务器建立ssh连接,  轻松传输(下载和上传)文件
+const Client = require('ssh2').Client; // 创建自己的sftp客户端构造函数
+
+const isWin = /win\d{2}/i.test(process.platform);
+
+// 在项目A-Log运行upFilesBin文件，cwd = /Users/sunyingying23/Github/A-Log/
+let cwd = process.cwd()+(isWin?'\\':'/'); // 调用node命令执行脚本时的目录
+
+// 暂时写死：todo
 cwd = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/';
 
-const readdirList = readdirFilesSync(cwd);
-console.log(readdirList);
+
+  const fileList = readdirFilesSync(cwd);
+  console.log(fileList);
 ~~~
 
 结果：
@@ -263,6 +336,68 @@ connServer();
     }
   }
 ]
+~~~
+
+# syncFile.js
+
+~~~js
+// fp = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/images/gogreern.png'
+
+function syncFile(fp, sftp) {
+  return new Promise((resolve, reject) => {
+    const stat = fs.statSync(fp)
+
+    let {local, remote, ip} = remoteHost; // remote="/data/static/QA6/fe-vas-h5"
+
+    local = local.replace(/^(\\|\/)|(\\|\/)$/g, ''); // asset-dev
+    remote = remote.replace(/^(\\|\/)|(\\|\/)$/g, ''); // "data/static/QA6/fe-vas-h5"
+
+  // rpath="/Users/sunyingying23/Github/A-Log/bin/data/static/QA6/fe-vas-h5/images/gogreern.png"
+    const rpath = fp.replace(local, remote)
+      .replace(/trunk[\\\/]?/, '')  // 去掉trunk目录
+      .replace(/branches[\\\/][^\\\/]+[\\\/]?/, '') // 去掉分支目录
+    if (stat.isDirectory()) {
+      sftp.stat(fp, err => {
+        if (err) {
+          mkdirWithSFtp(rpath, sftp).then(resolve).catch(err => {
+            console.log(`sync:: ${fp} >>>>>> ${ip}:${rpath} >>>>>> ${err}`)
+          })
+        } else {
+          resolve()
+        }
+      })
+    } else {
+      // fp是一个文件
+      sftp.fastPut(fp, rpath, err => {
+        if (err) {
+          if (err.toString().indexOf('No such file') >- 1) {
+            console.log(`sync:: ${ fp } 需要创建创建文件夹...`.red)
+            mkdirWithSFtp(path.dirname(rpath), sftp)
+              .then(() => syncFile(fp, sftp))
+              .then(resolve)
+              .catch(err => {
+                console.log(`sync:: ${ fp } >>>>>> ${ip}:${rpath} >>>>>>${err}`.red)
+                console.log('重试一次...')
+                return syncFile(fp, sftp)
+              })
+              .catch(err => {
+                console.log(`sync:: ${fp} >>>>>> ${ip}:${rpath} >>>>>> ${err}`.red)
+                return syncFile(fp, sftp)
+              })
+              .then(resolve)
+              .catch(err => console.log(`sync:: ${ fp } >>>>>> ${ip}:${rpath} >>>>>>${err}`.red))
+          } else {
+            console.log(`sync:: ${fp} >>>>>> ${ip}:${rpath} >>>>>> ${err}`.red)
+            resolve()
+          }
+        } else {
+          console.log(`sync:: ${fp} >>>>>> ${ip}:${rpath} >>>>>> success`.green);
+          resolve()
+        }
+      })
+    }
+  })
+}
 ~~~
 
 

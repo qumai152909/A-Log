@@ -16,6 +16,16 @@ https://github.com/logan70/Blog/issues/36
 .then(result3 => { /* use result3 */ });
 ~~~
 
+​	or
+
+~~~js
+let itemIDs = [1, 2, 3, 4, 5];
+
+itemIDs.reduce((promise, itemID) => {
+  return promise.then(_ => api.deleteItem(itemID));
+}, Promise.resolve());
+~~~
+
 通常，我们递归调用一个由异步函数组成的数组时，相当于一个 Promise 链：
 
 ```js

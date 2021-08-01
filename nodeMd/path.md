@@ -66,5 +66,19 @@ console打印得到"/home/myself/node/a/b2"
 
 
 
+# error: zsh: permission denied
 
+**zsh: permission denied: ./bin/pubBin**
+
+解决方法：https://stackoverflow.com/questions/53229221/terminal-error-zsh-permission-denied-startup-sh
+
+~~~~bash
+cd ~/the/script/folder
+
+chmod +x ./startup.sh
+
+
+
+chmod u+x ./bin/pubBin  # 具体
+~~~~
 

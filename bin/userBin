@@ -26,3 +26,16 @@ if (args[0] === 'showTxtContent') {
 if (args[0] === 'prams') {
   require('./userLib/showPrams')
 }
+
+/* --- ----- fileLib ---- ----  */
+if (args[0] === 'mkdir') {
+  require('./fileLib/makeDir')
+}
+
+if (args[0] === 'copeOneFile') {
+  require('./fileLib/copyOneFile')
+}
+
+if (args[0] === 'copyFolderSync') {
+  require('./fileLib/copyFolderSync')();
+}

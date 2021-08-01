@@ -3,7 +3,7 @@ const resolvePath = require('path').resolve
 const config = require('../config')
 const input = require('../utils/input')
 module.exports = () => {
-  let serverName
+  let serverName = Q6;
   const serverConfig = {
     // ip 服务器IP地址
     // name 别名
@@ -11,6 +11,13 @@ module.exports = () => {
     // pwd 密码
     // localRoot 本地文件目录
     // remote 远程目录
+    ip: "12.122.12.66",
+    port: 22,
+    user: 'syy',
+    password: '****',
+    localRoot: 'asset-dev',
+    remote: '/data/static/QA18/fe-vas-h5',
+    
   }
 
   input('name:')

@@ -1,1 +1,18 @@
-{}
+{
+  "Q6": {
+    "ip": "12.122.12.66",
+    "port": 22,
+    "user": "syy",
+    "password": "****",
+    "local": "asset-dev",
+    "remote": "/data/static/QA6/fe-vas-h5"
+  },
+  "12.122.12.66": {
+    "ip": "12.122.12.66",
+    "port": 22,
+    "user": "syy",
+    "password": "****",
+    "local": "asset-dev",
+    "remote": "/data/static/QA6/fe-vas-h5"
+  }
+}

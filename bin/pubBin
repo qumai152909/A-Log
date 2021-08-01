@@ -8,5 +8,5 @@ console.log(chalk.blue('----- start up files bin -----'));
 const args = process.argv.slice(2);
 
 if (args[0] === 'upFiles') {
-  require('./lib/upFiles')
+  require('./lib/upFiles')();
 }

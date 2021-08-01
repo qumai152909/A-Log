@@ -23,7 +23,8 @@ function formatSvnFile(str){
   return result;
 }
 function mkdirWithSFtp (fp, sftp) {
-  const arr = fp.replace(/^(\/|\\)|(\\|\/)$/g, '').split(/\/|\\/)
+  const arr = fp.replace(/^(\/|\\)|(\\|\/)$/g, '').split(/\/|\\/); // ['images', 'a.png']
+
   const promise = dir => new Promise((resolve, reject) => {
     sftp.stat(dir, err => {
       if (err) {
@@ -35,8 +36,8 @@ function mkdirWithSFtp (fp, sftp) {
   })
   return arr.reduce((a, b) => {
     return a.then(pDir => {
-      const dirPath = `${pDir || ''}/${b}`
-      const p = dirCreators[dirPath] || promise(dirPath)
+      const dirPath = `${pDir || ''}/${b}`; // '/images'
+      const p = dirCreators[dirPath] || promise(dirPath);
       dirCreators[dirPath] || (dirCreators[dirPath] = p)
       return p
     })
@@ -44,15 +45,29 @@ function mkdirWithSFtp (fp, sftp) {
   }, Promise.resolve())
 }
 
+
+// ip 服务器IP地址
+// name 别名
+// user 用户名
+// pwd 密码
+// local 本地文件目录 'asset-dev'
+// remote 远程目录 '/data/static/QA18/fe-vas-h5'
+
+// fp = '/Users/sunyingying23/Github/A-Log/bin/asset-dev/images/gogreern.png'
+
 function syncFile(fp, sftp) {
   return new Promise((resolve, reject) => {
     const stat = fs.statSync(fp)
-    let {local, remote, ip} = remoteHost
-    local = local.replace(/^(\\|\/)|(\\|\/)$/g, '')
-    remote = remote.replace(/^(\\|\/)|(\\|\/)$/g, '')
+    let {local, remote, ip} = remoteHost;
+    local = local.replace(/^(\\|\/)|(\\|\/)$/g, ''); // asset-dev
+    remote = remote.replace(/^(\\|\/)|(\\|\/)$/g, ''); // "data/static/QA6/fe-vas-h5"
+  
+    // rpath="/data/static/QA6/fe-vas-h5/images/gogreern.png" ???
+  
     const rpath = fp.replace(local, remote)
       .replace(/trunk[\\\/]?/, '')  // 去掉trunk目录
       .replace(/branches[\\\/][^\\\/]+[\\\/]?/, '') // 去掉分支目录
+ 
     if (stat.isDirectory()) {
       sftp.stat(fp, err => {
         if (err) {
@@ -64,9 +79,10 @@ function syncFile(fp, sftp) {
         }
       })
     } else {
+      // fp是一个文件，开始上传到远程服务器
       sftp.fastPut(fp, rpath, err => {
         if (err) {
-          if (err.toString().indexOf('No such file') >- 1) {
+          if (err.toString().indexOf('No such file') >- 1) { // 如果服务器上没有这个文件
             console.log(`sync:: ${ fp } 需要创建创建文件夹...`.red)
             mkdirWithSFtp(path.dirname(rpath), sftp)
               .then(() => syncFile(fp, sftp))
@@ -87,6 +103,7 @@ function syncFile(fp, sftp) {
             resolve()
           }
         } else {
+          // 上传成功
           console.log(`sync:: ${fp} >>>>>> ${ip}:${rpath} >>>>>> success`.green);
           resolve()
         }
@@ -101,7 +118,7 @@ function syncHosts (args, fileList) {
   if (!host) {
     return
   }
-  remoteHost = config[host]
+  remoteHost = config[host]; // host = '10.110.15.1' or host=h='q6'
   const conn = new Client();
   conn.on('ready', () => {
     conn.sftp((err, sftp) => {

@@ -238,6 +238,90 @@ https://blog.csdn.net/younglao/article/details/77046830
 
 
 
+# fs.mkdir(): 异步 创建文件夹
+
+**可以创建层级文件夹**(NodeJS 10以后的版本) ： 异步： Asynchronously creates a directory
+
+语法： `fs.mkdir(path[, options], callback)`
+
+**options.recursive = true**: 即使path指定的文件夹已经存在，创建时，也不会报错；
+
+**options.recursive = false**: 如果path指定的文件夹已经存在，创建时，会报错：
+
+​					*Error: EEXIST: file already exists, mkdir './tmp/a/apple'*
+
+~~~js
+const fs = require('fs');
+
+
+// Creates /tmp/a/apple, regardless of whether `/tmp` and /tmp/a exist.
+
+fs.mkdir('./tmp/a/apple', { recursive: true }, (err) => {
+  
+  if (err) throw err;
+  
+});
+~~~
+
+上面代码：如果path目录已经存在，且目录中有文件，再次创建时，不会删除文件。
+
+***
+
+https://www.inull.cn/article/94
+
+
+
+# fs.copyFile()
+
+目的： *Asynchronously copies `src` to `dest`.*
+
+语法：`fs.copyFile(src, dest[, mode], callback)`
+
+注意：默认，**如果，dest已经存在，会被覆盖**
+
+~~~js
+import { copyFile, constants } from 'fs';
+
+function callback(err) {
+  if (err) throw err;
+  console.log('source.txt was copied to destination.txt');
+}
+
+// 默认：覆盖式复制文件： destination.txt will be created or overwritten by default.
+
+copyFile('source.txt', 'destination.txt', callback);
+
+
+// By using COPYFILE_EXCL, the operation will fail if destination.txt exists.
+
+copyFile('source.txt', 'destination.txt', constants.COPYFILE_EXCL, callback);
+~~~
+
+or
+
+~~~js
+const fs = require('fs');
+const chalk = require('chalk');
+
+function callback(err) {
+  if (err) {
+    console.log(chalk.redBright(err));
+    throw err;
+  }
+  console.log(chalk.greenBright('拷贝成功： source.txt was copied to destination.txt'));
+}
+
+// 默认：覆盖式复制文件： destination.txt will be created or overwritten by default.
+
+fs.copyFile('./bin/data/wow.txt', './tmp/wow.txt', callback);
+~~~
+
+**注意： 如果tmp文件夹不存在，则会报错：**
+
+​					Error: ENOENT: no such file or directory, copyfile './bin/data/wow.txt' -> './tmp/wow.txt'
+
+
+
 
 # 复制文件
 
@@ -253,9 +337,12 @@ fs.createReadStream('test.log').pipe(fs.createWriteStream('newLog.log'));
 const fs = require('fs');
 
 // destination.txt will be created or overwritten by default.
-fs.copyFile('source.txt', 'destination.txt', (err) => {
+
+fs.('source.txt', 'destination.txt', (err) => 
+    
   if (err) throw err;
   console.log('source.txt was copied to destination.txt');
+
 });
 ~~~
 
@@ -286,6 +373,76 @@ function copyFile(source, target, cb) {
 }
 ~~~
 
+包装为promise的写法：
+
+```js
+function copyFile(source, target) {
+  var rd = fs.createReadStream(source);
+  var wr = fs.createWriteStream(target);
+  return new Promise(function(resolve, reject) {
+    rd.on('error', reject);
+    wr.on('error', reject);
+    wr.on('finish', resolve);
+    rd.pipe(wr);
+  }).catch(function(error) {
+    rd.destroy();
+    wr.end();
+    throw error;
+  });
+}
+```
+
+使用async / await语法：
+
+```js
+async function copyFile(source, target) {
+  var rd = fs.createReadStream(source);
+  var wr = fs.createWriteStream(target);
+  try {
+    return await new Promise(function(resolve, reject) {
+      rd.on('error', reject);
+      wr.on('error', reject);
+      wr.on('finish', resolve);
+      rd.pipe(wr);
+    });
+  } catch (error) {
+    rd.destroy();
+    wr.end();
+    throw error;
+  }
+}
+```
+
+
+
+# 复制文件夹
+
+高版本的node：已经支持**fs.copyFile()**， 下面是**同步**方法：
+
+~~~js
+const fs = require('fs');
+
+
+function copyFolderSync(from, to) {
+    fs.mkdirSync(to); // Synchronously creates a directory
+  
+   // readdirSync ：Reads the contents of the directory. ['css', 'main.html']
+  
+    fs.readdirSync(from).forEach(element => {
+      
+        if (fs.lstatSync(path.join(from, element)).isFile()) {
+          
+            fs.copyFileSync(path.join(from, element), path.join(to, element));
+          
+        } else {
+          
+            copyFolderSync(path.join(from, element), path.join(to, element));
+        }
+    });
+}
+~~~
+
+
 
 # 其他： 文件系统标志
 
@@ -310,7 +467,7 @@ https://blog.csdn.net/qinlulucsdn/article/details/108608073  node 进行文件�
 
 
 
-
+https://cloud.tencent.com/developer/article/1499011 nodejs文件操作扩展fs-extra
 
 
 
