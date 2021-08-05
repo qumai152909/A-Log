@@ -16,6 +16,7 @@
 ./bin/userBin copeOneFile
 
 ./bin/userBin copyFolderSync -f bin/asset-dev -t copyAssetDevSync
+./bin/userBin folderZip -f build -t towerZip -p plus-xview-milestone
 
 ./bin/pubBin upFiles
 ~~~

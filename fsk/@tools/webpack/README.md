@@ -87,7 +87,9 @@ const App = () => {
 ### start
 
 最常用的命令, 编译并预览, 其中所有 ajax 请求会被代理到`webpack.config.js`里配置的后台地址上。
-注意: 通过`start, dev`命令，`css`均会打包到`js`中，而不会抽出单独的`css`文件，这是因为`MiniCssExtractPlugin`与缓存插件存在冲突，所以只有在`prd`或 `prd:test`时，才会调用`MiniCssExtractPlugin`形成独立的`css`文件，如果需要测试，可通过`prd:test`方式查看`css`抽取情况。
+注意: 通过`start, dev`命令，`css`均会打包到`js`中，而不会抽出单独的`css`文件，
+这是因为`MiniCssExtractPlugin`与缓存插件存在冲突，所以只有在`prd`或 `prd:test`时，
+才会调用`MiniCssExtractPlugin`形成独立的`css`文件，如果需要测试，可通过`prd:test`方式查看`css`抽取情况。
 
 ### start:source
 
@@ -118,7 +120,8 @@ const App = () => {
 npm run qa
 ```
 
-注: 交互界面本来想通过发布最近修改的部份文件来缩减每次发送文件的数量，但实操后发现文件打包后引用规则的复杂性难以实现安全的判断，故只粗暴的进行类型分类, 之后这个可能是要继续优化的。
+注: 交互界面本来想通过发布最近修改的部份文件来缩减每次发送文件的数量，
+但实操后发现文件打包后引用规则的复杂性难以实现安全的判断，故只粗暴的进行类型分类, 之后这个可能是要继续优化的。
 
 也可以直接使用命令
 
@@ -188,7 +191,8 @@ output({config, isDevj, isPrd, isHot}){
 
 #### devtool
 
-生成 source-map 的方式, 需在 chrome 的 devtools 中开启 sourcemap，使用命令`npm run start:source`时, 生成 sourcemap,
+生成 source-map 的方式, 需在 chrome 的 devtools 中开启 sourcemap，
+使用命令`npm run start:source`时, 生成 sourcemap,
 可用来展示源码, 这对定位问题非常有用, 配合 react-dev-tools,
 但由于 sourcemap 会极大的影响编译速度,
 所以只建议在需要的时候使用

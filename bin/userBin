@@ -39,3 +39,7 @@ if (args[0] === 'copeOneFile') {
 if (args[0] === 'copyFolderSync') {
   require('./fileLib/copyFolderSync')();
 }
+
+if (args[0] === 'folderZip') {
+  require('./fileLib/folderZip')();
+}

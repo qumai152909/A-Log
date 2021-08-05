@@ -9,17 +9,17 @@ const { roots, prdVersionPath, prdPath, version } = require('../utils/paths')
 const zipFilePath = path.join(os.tmpdir() || './', 'asset.zip')
 const svn = require(path.join(roots, 'package.json'))
 const request = require('request')
-const zipdir = require('zip-dir')
-const { isPrdBranches } = require('../utils/process')
+const zipdir = require('zip-dir'); // Zips up a directory and saves the zip to disk or returns as a buffer.
+const { isPrdBranches } = require('../utils/process');
 
-const logger = (text, color = 'green') => console.log(chalk[color](text))
-const zipFileName = `asset${Date.now()}.zip`
+const logger = (text, color = 'green') => console.log(chalk[color](text));
+const zipFileName = `asset${Date.now()}.zip`;
 
 class Transfer {
   constructor() {
     this.scmRevision = null
     this.userName = null
-    this.publishUrl = 'http://package.lietou.com/FileController/uploadFile.json'
+    this.publishUrl = 'http://package.lietou.com/FileController/uploadFile.json';
 
     const prdTasks = [
       this.getCommitId.bind(this),
@@ -43,7 +43,7 @@ class Transfer {
     return new Promise((resolve, reject) => {
       exec('git rev-parse --verify --short HEAD', (err, status) => {
         if (err) {
-          logger('获取最新CommitId失败!!!', 'red')
+          logger('获取最新CommitId失败!!!', 'red');
           reject(err)
         } else {
           logger('获取最新CommitId成功.')
@@ -266,13 +266,13 @@ class Transfer {
   }
   pack() {
     return new Promise((resolve, reject) => {
-      logger(`开始打包文件:${prdPath}...`, 'blue')
+      logger(`开始打包文件:${prdPath}...`, 'blue');
       zipdir(prdPath, { saveTo: zipFilePath }, (err) => {
         if (err) {
-          logger('打包文件失败！', 'red')
+          logger('打包文件失败！', 'red');
           reject(err)
         } else {
-          logger('打包文件完成.')
+          logger('打包文件完成.');
           resolve()
         }
       })
@@ -283,4 +283,4 @@ class Transfer {
   }
 }
 
-new Transfer()
+new Transfer();
